@@ -1,7 +1,7 @@
 # Wiffee
 
 ![alt text][logo]
-[logo]: https://github.com/coriumalpha/wiffee/blob/master/Content/www/images/miniLogo.png "Logo Title"
+[logo]: https://gitlab.com/coriumalpha/wiffee/blob/master/Content/www/images/miniLogo.png "Logo Title"
 
 ### Personal WiFi AP key database gestor.
 
