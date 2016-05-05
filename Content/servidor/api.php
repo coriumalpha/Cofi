@@ -206,10 +206,77 @@ if($action == "insert")
 
 ########################--DELETE-LOCATION--########################
 
+if($action == 'deleteLocation')
+{
+	deleteLocation($_REQUEST['locationId']);
+}
+
+
+function deleteLocation($locationId)
+{
+	global $link, $sessionId;
+
+	$result = mysqli_query($link, "DELETE FROM bares WHERE id = '$locationId'");
+	if(!result)
+	{
+		$return['status'] = false;
+		$return['message'] = "Error al eliminar el registro ".$locationId.".";
+		return true;
+	}
+	else
+	{
+		$return['status'] = true;
+		$return['message'] = "Registro ".$locationId." eliminado.";
+		return false;
+	}
+	Joutput($result);
+}
+
 
 ########################--UPDATE-LOCATION--########################
 
+if($action == 'updateLocation')
+{
+	updateLocation(); //need to fill with data D:
+}
 
+
+function updateLocation($locationArray) //Devuelve true si correcto, inserta nuevo bar
+{
+	global $link, $sessionId;
+
+	$locationId = $locationArray[0];
+	$nombre = $locationArray[1];
+	$essid = $locationArray[2];
+	$wifiPass = $locationArray[3];
+	$location = $locationArray[4];
+	$plugs = $locationArray[5];
+
+	$updateQuery = "
+		UPDATE bares
+		SET
+			nombre = '$nombre',
+			essid = '$essid',
+			wifiPass = '$wifiPass',
+			location = '$location',
+			plugs = '$plugs'
+		WHERE
+			id = '$locationArray'
+			AND
+			idHost = '$sessionId'
+		";
+
+	$updateResult = mysqli_query($link, $updateQuery);
+	if(!$updateResult)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
 
 
 
