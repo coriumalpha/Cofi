@@ -115,3 +115,29 @@ function closeSession()
         }
     });
 }
+
+
+$('#detailedView').onload = loadDetailedView();
+
+function loadDetailedView()
+{
+    $.ajax({url: 'http://raspi.hol.es/api.php',
+        data: {action : 'showDetailed',},
+        type: 'post',                   
+        async: 'true',
+        dataType: 'json',
+        success: function (result) {
+                $('#detailedView').html("");
+
+                $('#detailedView').append(
+                        //include list HTML with site details parsed from AJAX returned JSON
+                        //similar to loadListview
+                    )
+                
+                $('#listView').listview('refresh');              
+        },
+        error: function (request,error) {          
+            alert('Error de red/servidor.');
+        }
+    });
+}
