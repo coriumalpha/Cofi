@@ -280,4 +280,63 @@ function updateLocation($locationArray) //Devuelve true si correcto, inserta nue
 
 
 
+##########################--SHOW-DETAILS--##########################
+
+
+if($action == "showDetails") //Recoge la lista de la bbdd matcheando id y devuelve JSON
+{
+	showDetails($siteId);
+}
+
+
+function showDetails($siteId)
+{
+	global $link, $sessionId;
+
+	$listQuery = "
+		SELECT
+			id,
+			idHost,
+			nombre,
+			essid,
+			wifiPass,
+			location,
+			plugs
+		FROM bares
+		WHERE
+			id = '$siteId'
+			AND
+			idHost = '$sessionId'
+	";
+
+	$listResult = mysqli_query($link, $listQuery);
+	while($row = mysqli_fetch_assoc($listResult))
+	{
+		if($row['plugs'] == 1)
+		{
+			$plugs = "fa fa-plug";
+		}
+		else
+		{
+			$plugs = "fa fa-battery-full";
+		}
+
+		$listOutput[] = array(
+							'barId' => $row['id'],
+							'idHost' => $row['idHost'],
+							'nombre' => $row['nombre'],
+							'essid' => $row['essid'],
+							'wifiPass' => $row['wifiPass'],
+							'location' => $row['location'],
+							'plugs' => $plugs,
+						);
+	}
+	Joutput($listOutput);
+}
+
+
+
+
+
+
 ?>
