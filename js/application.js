@@ -131,12 +131,9 @@ function loadDetailedView(id)
         dataType: 'json',
         success: function (result) {
                 $('#detailedView').html("");
-
                 $('#detailedView').append(
                         result[0].nombre
                     );
-
-                
                 $('#listView').listview('refresh');              
         },
         error: function (request,error) {          
