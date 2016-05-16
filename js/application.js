@@ -71,11 +71,7 @@ function loadListView()
                 $('#listView').html("");
             for (var i = 0; i < result.length; i++) {
                 $('#listView').append(
-<<<<<<< HEAD
                     '<li><a onclick="loadDetailedView('+result[i].barId+')"><i class="' +result[i].plugs+ '"></i>  '+result[i].nombre+
-=======
-                    '<li><a href="#siteDetails?id=' +result[i].barId+ '"><i class="' +result[i].plugs+ '"></i>  '+result[i].nombre+
->>>>>>> develop
                     '<p><b>' +result[i].essid+ '</b> : '  +result[i].wifiPass+ 
                     '</p><p>' +result[i].location+ '</p></a>' +
                     '</li>'
@@ -121,7 +117,6 @@ function closeSession()
 }
 
 
-<<<<<<< HEAD
 //$('#detailedView').onload = loadDetailedView();
 
 function loadDetailedView(id)
@@ -131,14 +126,6 @@ function loadDetailedView(id)
 
     $.ajax({url: 'http://raspi.hol.es/api.php',
         data: {action : 'showDetailed', ident : id,},
-=======
-$('#detailedView').onload = loadDetailedView();
-
-function loadDetailedView()
-{
-    $.ajax({url: 'http://raspi.hol.es/api.php',
-        data: {action : 'showDetailed',},
->>>>>>> develop
         type: 'post',                   
         async: 'true',
         dataType: 'json',
@@ -146,14 +133,9 @@ function loadDetailedView()
                 $('#detailedView').html("");
 
                 $('#detailedView').append(
-<<<<<<< HEAD
                         result[0].nombre
                     );
-=======
-                        //include list HTML with site details parsed from AJAX returned JSON
-                        //similar to loadListview
-                    )
->>>>>>> develop
+
                 
                 $('#listView').listview('refresh');              
         },
@@ -161,8 +143,5 @@ function loadDetailedView()
             alert('Error de red/servidor.');
         }
     });
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> develop
+
