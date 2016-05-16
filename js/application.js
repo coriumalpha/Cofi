@@ -73,15 +73,15 @@ function loadListView()
 
                 if(result[i].plugs == 1)
                 {
-                    plugsData = 'fa fa-plug';
+                    plugsData = 'fa fa-plug fa-fw';
                 }
                 else if(result[i].plugs == 2)
                 {
-                    plugsData = '';
+                    plugsData = 'fa-clock-o fa-fw';
                 }
                 else
                 {
-                    plugsData = 'fa fa-battery-full';
+                    plugsData = 'fa fa-battery-full fa-fw';
                 }
 
                 $('#listView').append(
