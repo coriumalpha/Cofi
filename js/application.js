@@ -77,7 +77,7 @@ function loadListView()
                 }
                 else if(result[i].plugs == 2)
                 {
-                    plugsData = 'fa-clock-o fa-fw';
+                    plugsData = 'fa fa-clock-o fa-fw';
                 }
                 else
                 {
