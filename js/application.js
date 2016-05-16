@@ -70,8 +70,22 @@ function loadListView()
         success: function (result) {
                 $('#listView').html("");
             for (var i = 0; i < result.length; i++) {
+
+                if(result[i].plugs == 1)
+                {
+                    plugsData = 'fa fa-plug';
+                }
+                else if(result[i].plugs == 2)
+                {
+                    plugsData = '';
+                }
+                else
+                {
+                    plugsData = 'fa fa-battery-full';
+                }
+
                 $('#listView').append(
-                    '<li><a onclick="loadDetailedView('+result[i].barId+')"><i class="' +result[i].plugs+ '"></i>  '+result[i].nombre+
+                    '<li><a onclick="loadDetailedView('+result[i].barId+')"><i class="' +plugsData+ '"></i>  '+result[i].nombre+
                     '<p><b>' +result[i].essid+ '</b> : '  +result[i].wifiPass+ 
                     '</p><p>' +result[i].location+ '</p></a>' +
                     '</li>'
