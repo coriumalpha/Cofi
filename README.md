@@ -1,7 +1,9 @@
 # Wiffee
 
-->![Cannot load image][logo]<-
-->[logo]: https://gitlab.com/coriumalpha/cofi/raw/046131533621779dd3f4097516019199fa0cf72d/images/miniLogo.png "Logo Title"<-
+<p align="center">
+  <img src="https://gitlab.com/coriumalpha/cofi/raw/046131533621779dd3f4097516019199fa0cf72d/images/miniLogo.png"/>
+</p>
+
 
 ### Personal WiFi AP key database gestor.
 
