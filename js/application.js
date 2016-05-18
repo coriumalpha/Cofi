@@ -148,7 +148,7 @@ function loadDetailedView(id)
                 $('#detailedView').append(
                         result[0].nombre
                     );
-                $('#listView').listview('refresh');              
+                //$('#listView').listview('refresh');              
         },
         error: function (request,error) {          
             alert('Error de red/servidor.');
