@@ -116,7 +116,7 @@ function closeSession()
         success: function (result) {
             if(result.status)
             {
-                alert("Sesión destruída.");
+                //alert("Sesión destruída.");
                 $.mobile.changePage("#login");
             }
             else
