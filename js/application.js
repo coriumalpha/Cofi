@@ -1,3 +1,5 @@
+var serverUrl = "http://doghunter.ddns.net/vakdert"
+
 
 
 $(document).on('pageinit', '#login', function()
@@ -6,7 +8,7 @@ $(document).on('pageinit', '#login', function()
     { 
         if($('#username').val().length > 0 && $('#password').val().length > 0)
         {
-                $.ajax({url: 'http://raspi.hol.es/api.php',
+                $.ajax({url: serverUrl + '/api.php',
                     data: {action : 'login', formData : $('#loginForm').serialize()},
                     type: 'post',                   
                     async: 'true',
@@ -35,7 +37,7 @@ $(document).on('pageinit', '#insert', function()
     { 
         if($('#name').val().length > 0 && $('#essid').val().length > 0 && $('#wifiPass').val().length > 0 && $('#location').val().length > 0)
         {
-                $.ajax({url: 'http://raspi.hol.es/api.php',
+                $.ajax({url: serverUrl + '/api.php',
                     data: {action : 'insert', formData : $('#insertForm').serialize()},
                     type: 'post',                   
                     async: 'true',
@@ -62,7 +64,7 @@ $(document).on('pageinit', '#insert', function()
 
 function loadListView()
 {
-    $.ajax({url: 'http://raspi.hol.es/api.php',
+    $.ajax({url: serverUrl + '/api.php',
         data: {action : 'showList',},
         type: 'post',                   
         async: 'true',
@@ -108,7 +110,7 @@ $(document).on('pageinit', '#siteList', function()
 
 function closeSession()
 {
-    $.ajax({url: 'http://raspi.hol.es/api.php',
+    $.ajax({url: serverUrl + '/api.php',
         data: {action : 'logout',},
         type: 'post',                   
         async: 'true',
@@ -138,7 +140,7 @@ function loadDetailedView(id)
 
     $.mobile.changePage( "#siteDetails", { transition: "slidefade"});
 
-    $.ajax({url: 'http://raspi.hol.es/api.php',
+    $.ajax({url: serverUrl + '/api.php',
         data: {action : 'showDetailed', ident : id,},
         type: 'post',                   
         async: 'true',
