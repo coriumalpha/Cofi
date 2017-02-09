@@ -149,9 +149,12 @@ function loadDetailedView(id)
             $('#detailedView').html("");
             foreach(var dataItem in result[0])
             {
-                $('#detailedView').append(
-                    "<div>" + dataItem + "</div>"
-                );
+                $.each(result[0], function(name, value)
+                {
+                    $('#detailedView').append(
+                        "<div>" + name + ": " + value + "</div>"
+                    );
+                });
             }
             //$('#listView').listview('refresh');              
         },
