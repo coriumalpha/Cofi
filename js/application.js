@@ -146,11 +146,14 @@ function loadDetailedView(id)
         async: 'true',
         dataType: 'json',
         success: function (result) {
-                $('#detailedView').html("");
+            $('#detailedView').html("");
+            foreach(var dataItem in result[0])
+            {
                 $('#detailedView').append(
-                        result[0].nombre
-                    );
-                //$('#listView').listview('refresh');              
+                    "<div>" + dataItem + "</div>"
+                );
+            }
+            //$('#listView').listview('refresh');              
         },
         error: function (request,error) {          
             alert('Error de red/servidor.');
