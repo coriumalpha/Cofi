@@ -146,16 +146,16 @@ function loadDetailedView(id)
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            $('#detailedView').html("");
-            foreach(var dataItem in result[0])
-            {
+            $('#tableDetailsContent').html("");
+            /*$.each(result[0], function(key, result))
+            {*/
                 $.each(result[0], function(name, value)
                 {
                     $('#tableDetailsContent').append(
                         "<tr>" + value + "</tr>"
                     );
                 });
-            }
+            //}
             //$('#listView').listview('refresh');              
         },
         error: function (request,error) {          
