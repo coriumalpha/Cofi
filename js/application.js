@@ -151,8 +151,8 @@ function loadDetailedView(id)
             {
                 $.each(result[0], function(name, value)
                 {
-                    $('#detailedView').append(
-                        "<div>" + name + ": " + value + "</div>"
+                    $('#tableDetailsContent').append(
+                        "<tr>" + value + "</tr>"
                     );
                 });
             }
