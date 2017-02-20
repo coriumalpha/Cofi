@@ -153,8 +153,12 @@ function loadDetailedView(id)
                 {
                     switch(name)
                     {
+                        case "nombre":
+                            $('#u_name').val(value);
+                            return;
                         case "plugs":
                             $('#u_' + name).val(value).flipswitch('refresh');
+                            return;
                         case "idHost":
                             return;
                     }
