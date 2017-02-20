@@ -62,6 +62,38 @@ $(document).on('pageinit', '#insert', function()
 });
 
 
+$(document).on('pageinit', '#siteDetails', function()
+{  
+    $(document).on('click', '#u_submit', function()
+    { 
+        if($('#u_name').val().length > 0 && $('#u_essid').val().length > 0 && $('#u_wifiPass').val().length > 0 && $('#u_location').val().length > 0 && $('#u_barId').val().length > 0)
+        {
+                $.ajax({url: serverUrl + '/api.php',
+                    data: {action : 'insert', formData : $('#updateForm').serialize()},
+                    type: 'post',                   
+                    async: 'true',
+                    dataType: 'json',
+                    success: function (result) {
+                        if(result.status) {
+                            loadListView();
+                            $.mobile.changePage("#siteList");
+                        } else {
+                            alert(result.message); 
+                        }
+                    },
+                    error: function (request,error) {          
+                        alert('Error de red/servidor.');
+                    }
+                });                   
+        } else {
+            alert('Campos vacíos');
+        }           
+        return false; 
+    });    
+});
+
+
+
 function loadListView()
 {
     $.ajax({url: serverUrl + '/api.php',
