@@ -153,13 +153,12 @@ function loadDetailedView(id)
                 {
                     switch(name)
                     {
-                        case "barId":
+                        case "plugs":
+                            $('#u_' + name).val(value).flipswitch('refresh');
                         case "idHost":
                             return;
                     }
-                    $('#tableDetailsContent').append(
-                        "<td>" + value + "</td>"
-                    );
+                    $('#u_' + name).val(value);
                 });
             //}
             //$('#listView').listview('refresh');              

@@ -136,40 +136,50 @@
 				     </ul>
 				</div>
 			</div>
+			
 			<div data-role="content">
-				<div>
+				<form id="updateForm" name="updateForm" method="post" action="http://doghunter.ddns.net/vakdert/api.php" data-ajax="false">
+					<div data-role="fieldcontain" class="ui-hide-label">
 
-					<!--ul id="detailedView" data-role="listview" data-inset="true">
 
-					</ul-->
-					<div class="ui-grid-a">
-						<div class="ui-block-a">
-							<div class="ui-bar ui-bar-a">
-								<div id="detailedView">
-									
-									<table data-role="table" id="tableDetails" data-mode="reflow">
-									  <thead>
-									    <tr>
-									      <th>Nombre</th>
-									      <th>e-SSID</th>
-									      <th>Contraseña</th>
-									      <th>Ubicación<th>
-									      <th>Enchufe</th>
-									    </tr>
-									  </thead>
-									  <tbody>
-									    <tr id="tableDetailsContent">
-									      
-									    </tr>
-									  </tbody>
-									</table>
+						<label for="name">Nombre:</label>
+						<input type="text" name="name" id="u_name" placeholder="Nombre"/>
+						<br>
 
-								</div>
-							</div>
-						</div>
+						<label for="essid">E-SSID:</label>
+						<input type="text" name="essid" id="u_essid" placeholder="E-SSID"/>
+						<br>
+
+						<label for="wifiPass">Contraseña:</label>
+						<input type="text" name="wifiPass" id="u_wifiPass" placeholder="Contraseña"/>
+						<br>
+
+						<label for="location">Ubicación:</label>
+						<input type="text" name="location" id="u_location" placeholder="location"/>
+						<br>
+
+						<input type="hidden" name="barId" id="u_barId" />
+						<!--label for="plugs">Enchufe disponible</label>
+						<input type="checkbox" name="plugs" id="plugs" value="1"/-->
+
+						<fieldset>
+						  <div data-role="fieldcontain">
+						    <select id="u_plugs" data-role="flipswitch" name="plugs">
+						      <option value="0">No</option>
+						      <option value="1">Sí</option>
+						    </select>
+						    <label for="u_plugs">Enchufe disponible</label>
+						  </div>
+						</fieldset>
+
+		
+
+						<label for="confirmarLogin">Guardar</label>
+						<input type="button" name="submit" id="u_submit" value="Guardar"/>
 					</div>
-				</div>
+				</form>
 			</div>
+
 			<div data-role="footer" data-position="fixed">
 				<h1>@Corium</h1>
 			</div>
