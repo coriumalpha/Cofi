@@ -151,8 +151,14 @@ function loadDetailedView(id)
             {*/
                 $.each(result[0], function(name, value)
                 {
+                    switch(name)
+                    {
+                        case "barId":
+                        case "idHost":
+                            return;
+                    }
                     $('#tableDetailsContent').append(
-                        "<tr>" + value + "</tr>"
+                        "<td>" + value + "</td>"
                     );
                 });
             //}
