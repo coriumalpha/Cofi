@@ -106,10 +106,8 @@ $(document).on('pageinit', '#siteDetails', function()
                     $.ajax({url: serverUrl + '/api.php',
                         data:   {
                             action : 'deleteLocation', 
-                            formData : { 
-                                locationId: $('#u_barId').val()
-                                        }
-                                },
+                            locationId: $('#u_barId').val()
+                            },
                         type: 'post',                   
                         async: 'true',
                         dataType: 'json',
