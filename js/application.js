@@ -93,6 +93,48 @@ $(document).on('pageinit', '#siteDetails', function()
 });
 
 
+$(document).on('pageinit', '#siteDetails', function()
+{  
+    $(document).on('click', '#u_delete', function()
+    { 
+        var deleteConfirmation = 'Se va a proceder a eliminar el registro.';
+
+        if(confirm(deleteConfirmation))
+        {
+            if($('#u_barId').val().length > 0)
+            {
+                    $.ajax({url: serverUrl + '/api.php',
+                        data:   {
+                            action : 'deleteLocation', 
+                            formData : { 
+                                locationId: $('#u_barId').val()
+                                        }
+                                },
+                        type: 'post',                   
+                        async: 'true',
+                        dataType: 'json',
+                        success: function (result) {
+                            if(result.status) {
+                                loadListView();
+                                $.mobile.changePage("#siteList");
+                            } else {
+                                alert(result.message); 
+                            }
+                        },
+                        error: function (request,error) {          
+                            alert('Error de red/servidor.');
+                        }
+                    });                   
+            } else {
+                alert('Campos vacíos');
+            }
+        }           
+        return false; 
+    });    
+});
+
+
+
 
 function loadListView()
 {
