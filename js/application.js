@@ -6,30 +6,47 @@ $(document).on('pageinit', '#login', function()
 {  
     $(document).on('click', '#submit', function()
     { 
-        if($('#username').val().length > 0 && $('#password').val().length > 0)
-        {
-                $.ajax({url: serverUrl + '/api.php',
-                    data: {action : 'login', formData : $('#loginForm').serialize()},
-                    type: 'post',                   
-                    async: 'true',
-                    dataType: 'json',
-                    success: function (result) {
-                        if(result.status) {
-                            $.mobile.changePage("#siteList");                         
-                        } else {
-                            alert(result.message); 
-                        }
-                    },
-                    error: function (request,error) {          
-                        alert('Error de red/servidor.');
-                    }
-                });                   
-        } else {
-            alert('Campos vacíos');
-        }           
-        return false; 
+      tryLogin();  
     });    
+
+    $("#loginForm").bind("keypress", function(event) {
+        if(event.which == 13) {
+        event.preventDefault();
+            tryLogin();
+        }
+    });
+
 });
+
+
+
+function tryLogin()
+{
+    if($('#username').val().length > 0 && $('#password').val().length > 0)
+    {
+        $.ajax({url: serverUrl + '/api.php',
+            data: {action : 'login', formData : $('#loginForm').serialize()},
+            type: 'post',                   
+            async: 'true',
+            dataType: 'json',
+            success: function (result) {
+                if(result.status) {
+                    $.mobile.changePage("#siteList");                         
+                } else {
+                    alert(result.message); 
+                }
+            },
+            error: function (request,error) {          
+                alert('Error de red/servidor.');
+            }
+        });                   
+    }
+    else
+    {
+        alert('Campos vacíos');
+    }           
+    return false; 
+}
 
 $(document).on('pageinit', '#insert', function()
 {  
