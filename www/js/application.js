@@ -47,11 +47,17 @@ function initLogin() {
 }
 
 function initListBares() {
-    loadListView();
+    $("#mainContainer").load("./listBares.html", function() {
+        loadListView();
+    });
 }
 
 function initInsertBar() {
-    $("#mainContainer").load("./editorBares.html");
+    $("#mainContainer").load("./editorBares.html", function() {
+        $("#submitBar").click(function () {
+            insertBar();
+        });
+    });
 }
 
 function checkLogin() {
@@ -112,7 +118,7 @@ function renderBarList(barlist) {
         var baresTemplate = $.templates("#listBares-template");
         app = { entry: barlist };
         var parsedTemplate = baresTemplate.render(app);
-        $("#mainContainer").html(parsedTemplate);
+        $("#listBares").html(parsedTemplate);
     });
 }
 
@@ -175,35 +181,34 @@ function loadDetailedView(id) {
 }
 
 
-$(document).on('pageinit', '#insert', function()
-{  
-    $(document).on('click', '#submit', function()
-    { 
-        if($('#name').val().length > 0 && $('#essid').val().length > 0 && $('#wifiPass').val().length > 0 && $('#location').val().length > 0)
-        {
-                $.ajax({url: serverUrl + '/api.php',
-                    data: {action : 'insert', formData : $('#insertForm').serialize()},
-                    type: 'post',                   
-                    async: 'true',
-                    dataType: 'json',
-                    success: function (result) {
-                        if(result.status) {
-                            loadListView();
-                            $.mobile.changePage("#siteList");
-                        } else {
-                            alert(result.message); 
-                        }
-                    },
-                    error: function (request,error) {          
-                        alert('Error de red/servidor.');
+function insertBar() {
+    if(!($("#barEditorForm")[0].checkValidity())) {
+        $("#barEditorForm")[0].reportValidity()
+    }
+
+    if($('#name').val().length > 0 && $('#essid').val().length > 0 && $('#wifiPass').val().length > 0 && $('#location').val().length > 0)
+    {
+            $.ajax({url: serverUrl + '/api.php',
+                data: { action: 'insert', formData: $('#barEditorForm').serialize() },
+                type: 'post',                   
+                async: 'true',
+                dataType: 'json',
+                success: function (result) {
+                    if(result.status) {
+                        initListBares();
+                    } else {
+                        console.log(result.message); 
                     }
-                });                   
-        } else {
-            alert('Campos vacíos');
-        }           
-        return false; 
-    });    
-});
+                },
+                error: function (request,error) {          
+                    console.log('Error de red/servidor.');
+                }
+            });                   
+    } else {
+        alert('Campos vacíos');
+    }           
+    return false; 
+}
 
 
 $(document).on('pageinit', '#siteDetails', function()

@@ -11,7 +11,7 @@
                         <div class="input-group-addon">
                             <i class="fa fa-coffee" aria-hidden="true"></i>
                         </div>
-                        <input type="text" class="form-control form-control-warning" id="nombre" name="nombre" placeholder="Nombre del bar" required="">
+                        <input type="text" class="form-control form-control-warning" id="name" name="name" placeholder="Nombre del bar" required="">
                     </div>
                 </div>
                 
@@ -20,7 +20,7 @@
                         <div class="input-group-addon">
                             <i class="fa fa-fw fa-wifi" aria-hidden="true"></i>
                         </div>
-                        <input type="text" class="form-control" id="essid" name="password" placeholder="Nombre de red" required="">
+                        <input type="text" class="form-control" id="essid" name="essid" placeholder="Nombre de red" required="">
                     </div>
                 </div>
 
@@ -45,17 +45,17 @@
                 <div class="form-group">
                     <div class="btn-group d-flex" data-toggle="buttons">
                         <label class="btn btn-primary w-100 active">
-                            <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                            <input type="radio" name="plugs" id="option1" autocomplete="off" value="1" checked>
                             <i class="fa fa-fw fa-plug text-light" aria-hidden="true"></i>
                         </label>
                         <label class="btn btn-primary w-100">
-                            <input type="radio" name="options" id="option2" autocomplete="off">
+                            <input type="radio" name="plugs" id="option2" autocomplete="off" value="0">
                             <i class="fa fa-fw fa-battery text-light" aria-hidden="true"></i>
                         </label>
                     </div>
                 </div>
 
-                <button type="button" id="submitLogin" class="btn btn-primary btn-md btn-block">
+                <button type="button" id="submitBar" class="btn btn-primary btn-md btn-block">
                     <span class="pull-left"><i class="fa fa-fw fa-check" aria-hidden="true"></i></span>   
                     <span>Guardar<span>
                 </button>

@@ -1343,7 +1343,7 @@ pre {
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(109, 85, 70, 0.25); }
   .form-control::placeholder {
-    color: #d6beab;
+    color: #ad9380;
     opacity: 1; }
   .form-control:disabled, .form-control[readonly] {
     background-color: #e9ecef;
