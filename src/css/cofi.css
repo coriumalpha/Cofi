@@ -3,3 +3,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 }
+
+.invalid-feedback {
+    display: block;
+}

@@ -1,10 +1,5 @@
 var serverUrl = "http://localhost/vakdert";
 var user;
-var baresTemplate = $.templates("#listBares-template");
-
-$(function() {
-    //loadListView();
-});
 
 function tryLogin()
 {
@@ -66,6 +61,7 @@ function loadListView()
 }
 
 function renderBarList(barlist) {
+    var baresTemplate = $.templates("#listBares-template");
     app = { entry: barlist };
     var parsedTemplate = baresTemplate.render(app);
     $("#listBares").html(parsedTemplate);
@@ -79,14 +75,11 @@ function closeSession()
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            if(result.status)
-            {
-                //alert("Sesión destruída.");
-                $.mobile.changePage("#login");
-            }
-            else
-            {
-                alert("Error al destruir sesión.");
+            if(result.status) {
+                sessionStorage.clear();
+                initLogin()
+            } else {
+                console.log("Cannot logout");
             }           
         },
         error: function (request,error) {          

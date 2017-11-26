@@ -1,118 +1,136 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
         <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="./css/bootstrap.css">
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="./css/cofi.css">
 
-	</head>
+    </head>
 
-	<body>
+    <body>
 
-	    <nav class="navbar navbar-expand fixed-top navbar-light bg-darker">
-		    <a class="navbar-brand" href="#">
-		    	<img src="./img/miniLogo.png" width="30" height="30">
-		    </a>
-		    <div class="navbar-collapse collapse">
-		        <ul class="navbar-nav small pt-1">
-		            <li class="nav-item">
-		                <a class="nav-link active" href="#">
-		                	<i class="fa fa-fw fa-coffee" aria-hidden="true"></i>
-		                </a>
-		            </li>
-		            <li class="nav-item">
-		                <a class="nav-link" href="#">
-		                	<i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>
-		                </a>
-		            </li>
-		        </ul>
-		    </div>
-		    <div class="navbar-collapse collapse">
-		        <ul class="navbar-nav small pt-1 ml-auto">
-		            <li class="nav-item dropdown">
-				        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				        	<i class="fa fa-fw fa-gear" aria-hidden="true"></i>
-				        </a>
-				        <div class="dropdown-menu dropdown-menu-right navbar-custom-dropdown" aria-labelledby="navbarDropdownMenuLink">
-				        	<a class="dropdown-item" href="#">
-				        		<i class="fa fa-fw fa-user-circle" aria-hidden="true"></i>
-				        		<span class="">Perfil</span>
-				        	</a>
-				        	<a class="dropdown-item" href="#">
-				        		<i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>
-				        		Salir
-				        	</a>
-				        </div>
-				    </li>
-		        </ul>
-		    </div>
-		</nav>
-
-		<div class="container mb-3" style="margin-top: 4rem !important;">
-			<div class="row mt-2">
-				<div class="col-lg-12">
-				    <div id="listBares" class="list-group">
-				    	
-				    </div>
-				</div>
-			</div>
-		</div>
-
-		<script id="listBares-template" type="text/x-jsrender">
-			{{for entry}}
-			<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                	<div class="d-flex">
-                        <h5 class="mb-2 text-darker">
-                        	<i class="fa fa-fw fa-coffee text-darker " aria-hidden="true"></i> {{:nombre}}
-                        </h5>
-                	</div>
-                	<div class="d-flex">
-                        <small class="justify-content-around">
-                        	<!--div class="p-1 d-inline-flex">
-                        		<i class="fa fa-fw fa-puzzle-piece" aria-hidden="true"></i>
-                        	</div>
-                        	<div class="p-1 d-inline-flex">
-                        		<i class="fa fa-fw fa-credit-card" aria-hidden="true"></i>
-                        	</div>
-                        	<div class="p-1 d-inline-flex">
-                            	<i class="fa fa-fw fa-cutlery" aria-hidden="true"></i>
-							</div-->
-							<div class="p-1 d-inline-flex">
-                        		<i class="{{:plugs}}" aria-hidden="true"></i>
-                        	</div>
-                        </small>
-                	</div>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                	<div class="">
-                		<span><i class="fa fa-wifi fa-fw text-darker" aria-hidden="true"></i> {{:essid}}</span>
-                	</div>
-                	<div class="">
-                		<span><i class="fa fa-key fa-fw text-darker" aria-hidden="true"></i> {{:wifiPass}}</span>
-               		</div>
-               	</div>
-                <p class="mb-1"></p>
-                <p class="mb-1 siteAddress">
-                	<i class="fa fa-globe fa-fw text-darker" aria-hidden="true"></i>
-                	 {{:location}}
-				</p>
-          	</a>
-          	{{/for}}
-		</script>
+        <div id="navbarContainer"></div>
+        <div id="mainContainer" class="container"></div>
 
         <script src="./js/popper.min.js"></script>
-		<script src="./js/jquery.min.js"></script>
+        <script src="./js/jquery.min.js"></script>
         <script src="./js/tether.min.js"></script>
         <script src="./js/bootstrap.min.js"></script>
         <script src="./js/jsrender.js"></script>
-	    <script src="./js/application.js"></script>
+        <script src="./js/application.js"></script>
 
-	</body>
-	
+
+        <script type="text/javascript">
+            var serverUrl = "http://localhost/vakdert";
+
+            $(function() {
+                if (sessionStorage.getItem("user") !== "true") {
+                    initLogin();
+                } else {
+                    initListBares();
+                }
+            });
+
+            function initLogin() {
+                $("#navbarContainer").html('');
+                $("#mainContainer").load("./login.html", function() {
+                    $("#submitLogin").click(function(e) {
+                        checkLogin(); 
+                    }); 
+                });
+            }
+
+            function initListBares() {
+                initNavbar();
+                $("#mainContainer").load("./listBares.html", function() {
+                    loadListView();
+                });
+            }
+
+            function initNavbar() {
+                $("#navbarContainer").load("./navbar.html", function() {
+                    $("#navbar-logout").click(function() {
+                        closeSession();
+                    });       
+                });
+            }
+
+            function checkLogin() {
+                if(!($("#loginForm")[0].checkValidity())) {
+                    $("#loginForm")[0].reportValidity()
+                }
+                if($('#username').val().length > 0 && $('#password').val().length > 0)
+                {
+                    $.ajax({url: serverUrl + '/api.php',
+                        data: {action : 'login', formData : $('#loginForm').serialize()},
+                        type: 'post',                   
+                        async: 'true',
+                        dataType: 'json',
+                        success: function (result) {
+                            if(result.status) {
+                                sessionStorage.setItem("user", true);
+                                initListBares();                        
+                            } else {
+                                $(".invalid-feedback").removeClass("d-none");
+                                $("#loginForm input").addClass("is-invalid");
+                            }
+                        },
+                        error: function (request,error) {          
+                            console.log('Error de red/servidor. (' + request.statusText + ')');
+                        }
+                    });                   
+                }       
+            }
+        </script>
+
+        <script id="listBares-template" type="text/x-jsrender">
+            {{for entry}}
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="d-flex">
+                        <h5 class="mb-2 text-darker">
+                            <i class="fa fa-fw fa-coffee text-darker " aria-hidden="true"></i> {{:nombre}}
+                        </h5>
+                    </div>
+                    <div class="d-flex">
+                        <small class="justify-content-around">
+                            <!--div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-puzzle-piece" aria-hidden="true"></i>
+                            </div>
+                            <div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-credit-card" aria-hidden="true"></i>
+                            </div>
+                            <div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-cutlery" aria-hidden="true"></i>
+                            </div-->
+                            <div class="p-1 d-inline-flex">
+                                <i class="{{:plugs}}" aria-hidden="true"></i>
+                            </div>
+                        </small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <div class="">
+                        <span><i class="fa fa-wifi fa-fw text-darker" aria-hidden="true"></i> {{:essid}}</span>
+                    </div>
+                    <div class="">
+                        <span><i class="fa fa-key fa-fw text-darker" aria-hidden="true"></i> {{:wifiPass}}</span>
+                    </div>
+                </div>
+                <p class="mb-1"></p>
+                <p class="mb-1 siteAddress">
+                    <i class="fa fa-globe fa-fw text-darker" aria-hidden="true"></i>
+                     {{:location}}
+                </p>
+            </a>
+            {{/for}}
+        </script>
+    
+    </body>
+
 </html>

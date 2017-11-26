@@ -48,7 +48,8 @@ $input-group-addon-color:               $caqui !default;
 $input-group-addon-bg:                  $brown !default;
 $input-group-addon-border-color:        $dark-brown !default;
 
-
+$dropdown-bg:                       $light-caqui !default;
+$dropdown-link-color:               $brown !default;
 
 // Bootstrap and its default variables
 @import "node_modules/bootstrap/scss/bootstrap";
