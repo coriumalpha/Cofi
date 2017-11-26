@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
+        <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="./css/bootstrap.css">
+        <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="./css/cofi.css">
+
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="d-flex d-flex-justify-around" style="margin-top: 4rem;">
+                <div class="card bg-light">
+                    <div class="col-6 align-self-center">
+                        <img class="card-img-top" src="./img/mainBigLogo.png" alt="Cofi logo">
+                    </div>
+                    <div class="card-body">
+                        <form class="form" role="form" autocomplete="off" id="loginForm">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <label class="sr-only" for="inlineFormInputGroup">Usuario</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label class="sr-only" for="inlineFormInputGroup">Contraseña</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                        </div>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required="">
+                                    </div>
+                                        <div class="form-control-feedback">Shucks, check the formatting of that and try again.</div>
+                                </div>
+                            </div>
+                            <hr>
+                            <button type="submit" id="submitLogin" class="btn btn-primary btn-lg btn-block">Login</button>
+                        </form>
+                    </div>
+                    <!--/card-block-->
+                </div>
+            </div>
+        </div>
+
+        <script src="./js/popper.min.js"></script>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/tether.min.js"></script>
+        <script src="./js/bootstrap.min.js"></script>
+        <script src="./js/jsrender.js"></script>
+        <script src="./js/application.js"></script>
+
+        <script type="text/javascript">
+            var serverUrl = "http://localhost/vakdert";
+
+            $("#submitLogin").click(function(e) {
+                e.preventDefault();
+                checkLogin(); 
+            });
+
+            function checkLogin() {
+                if(!$("#loginForm")[0].checkValidity()) {
+                    $("#loginForm")[0].reportValidity()
+                }
+                if($('#username').val().length > 0 && $('#password').val().length > 0)
+                {
+                    $.ajax({url: serverUrl + '/api.php',
+                        data: {action : 'login', formData : $('#loginForm').serialize()},
+                        type: 'post',                   
+                        async: 'true',
+                        dataType: 'json',
+                        success: function (result) {
+                            if(result.status) {
+                                console.log("Session created")                         
+                            } else {
+                                console.log(result.message); 
+                            }
+                        },
+                        error: function (request,error) {          
+                            console.log('Error de red/servidor. (' + request.statusText + ')');
+                        }
+                    });                   
+                }       
+            }
+        </script>
+
+    </body>
+
+</html>
