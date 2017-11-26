@@ -1,0 +1,46 @@
+<div class="row mt-2">
+    <div class="col-lg-12">
+        <div id="listBares" class="list-group">
+            {{for entry}}
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="d-flex">
+                        <h5 class="mb-2 text-darker">
+                            <i class="fa fa-fw fa-coffee text-darker " aria-hidden="true"></i> {{:nombre}}
+                        </h5>
+                    </div>
+                    <div class="d-flex">
+                        <small class="justify-content-around">
+                            <!--div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-puzzle-piece" aria-hidden="true"></i>
+                            </div>
+                            <div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-credit-card" aria-hidden="true"></i>
+                            </div>
+                            <div class="p-1 d-inline-flex">
+                                <i class="fa fa-fw fa-cutlery" aria-hidden="true"></i>
+                            </div-->
+                            <div class="p-1 d-inline-flex">
+                                <i class="{{:plugs}}" aria-hidden="true"></i>
+                            </div>
+                        </small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <div class="">
+                        <span><i class="fa fa-wifi fa-fw text-darker" aria-hidden="true"></i> {{:essid}}</span>
+                    </div>
+                    <div class="">
+                        <span><i class="fa fa-key fa-fw text-darker" aria-hidden="true"></i> {{:wifiPass}}</span>
+                    </div>
+                </div>
+                <p class="mb-1"></p>
+                <p class="mb-1 siteAddress">
+                    <i class="fa fa-globe fa-fw text-darker" aria-hidden="true"></i>
+                     {{:location}}
+                </p>
+            </a>
+            {{/for}}
+        </div>
+    </div>
+</div>

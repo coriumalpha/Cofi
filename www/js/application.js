@@ -1,41 +1,88 @@
+//var serverUrl = "http://doghunter.ddns.net/vakdert";
 var serverUrl = "http://localhost/vakdert";
 var user;
 
-function tryLogin()
-{
-    //if($('#username').val().length > 0 && $('#password').val().length > 0)
-    //{
+$(function() {
+    if (sessionStorage.getItem("user") !== "true") {
+        initLogin();
+    } else {
+        initNavbar();
+        initListBares();
+    }
+});
+
+function initNavbar() {
+    $("#navbarContainer").load("./navbar.html", function() {
+        $("#navbar-logout").click(function() {
+            closeSession();
+        });     
+        $("#navbar-home").click(function() {
+            initListBares();
+            changeNavbarActive("navbar-home");
+        });  
+        $("#navbar-insert").click(function() {
+            initInsertBar();
+            changeNavbarActive("navbar-insert");
+        });
+        $("#navbar-imagelink").click(function() {
+            initListBares();
+            changeNavbarActive("navbar-home");
+        });
+        $("#navbar-home").addClass("active");
+    });
+}
+
+function changeNavbarActive(activeId) {
+    $("#top-navbar .active").removeClass("active");
+    $("#" + activeId).addClass("active");
+}
+
+function initLogin() {
+    $("#navbarContainer").html('');
+    $("#mainContainer").load("./login.html", function() {
+        $("#submitLogin").click(function(e) {
+            checkLogin(); 
+        }); 
+    });
+}
+
+function initListBares() {
+    loadListView();
+}
+
+function initInsertBar() {
+    $("#mainContainer").load("./editorBares.html");
+}
+
+function checkLogin() {
+    if(!($("#loginForm")[0].checkValidity())) {
+        $("#loginForm")[0].reportValidity()
+    }
+    if($('#username').val().length > 0 && $('#password').val().length > 0)
+    {
         $.ajax({url: serverUrl + '/api.php',
-            //data: {action : 'login', formData : $('#loginForm').serialize()},
-            data: {action : 'login', formData : "username=root&password=totoro"},
+            data: {action : 'login', formData : $('#loginForm').serialize()},
             type: 'post',                   
             async: 'true',
             dataType: 'json',
             success: function (result) {
                 if(result.status) {
-                    alert("Session created")                         
+                    sessionStorage.setItem("user", true);
+                    initNavbar();
+                    initListBares();                        
                 } else {
-                    alert(result.message); 
+                    $(".invalid-feedback").removeClass("d-none");
+                    $("#loginForm input").addClass("is-invalid");
                 }
             },
             error: function (request,error) {          
-                alert('Error de red/servidor. (' + request.statusText + ')');
+                console.log('Error de red/servidor. (' + request.statusText + ')');
             }
         });                   
-    /*}
-    else
-    {
-        alert('Campos vacíos');
-    } */          
-    return false; 
+    }       
 }
 
-function renderLoginPage() {
-    
-}
-
-function loadListView()
-{
+function loadListView() {
     $.ajax({url: serverUrl + '/api.php',
         data: {action : 'showList',},
         type: 'post',                   
@@ -61,14 +108,15 @@ function loadListView()
 }
 
 function renderBarList(barlist) {
-    var baresTemplate = $.templates("#listBares-template");
-    app = { entry: barlist };
-    var parsedTemplate = baresTemplate.render(app);
-    $("#listBares").html(parsedTemplate);
+    $("#listBares-template").load("./scripts/listBares.tmpl.html", function() {
+        var baresTemplate = $.templates("#listBares-template");
+        app = { entry: barlist };
+        var parsedTemplate = baresTemplate.render(app);
+        $("#mainContainer").html(parsedTemplate);
+    });
 }
 
-function closeSession()
-{
+function closeSession() {
     $.ajax({url: serverUrl + '/api.php',
         data: {action : 'logout',},
         type: 'post',                   
@@ -89,10 +137,7 @@ function closeSession()
 }
 
 
-//$('#detailedView').onload = loadDetailedView();
-
-function loadDetailedView(id)
-{
+function loadDetailedView(id) {
 
     $.mobile.changePage( "#siteDetails", { transition: "slidefade"});
 
@@ -128,6 +173,7 @@ function loadDetailedView(id)
         }
     });
 }
+
 
 $(document).on('pageinit', '#insert', function()
 {  

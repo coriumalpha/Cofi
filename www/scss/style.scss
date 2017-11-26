@@ -22,6 +22,7 @@ $theme-colors: (
 
 
 $body-bg: $brown;
+$body-color:                $brown !default;
 
 $navbar-light-color:                rgba($caqui,.5) !default;
 $navbar-light-hover-color:          rgba($caqui,.7) !default;
@@ -50,6 +51,10 @@ $input-group-addon-border-color:        $dark-brown !default;
 
 $dropdown-bg:                       $light-caqui !default;
 $dropdown-link-color:               $brown !default;
+
+.fa-inverse {
+    color: $caqui;
+}
 
 // Bootstrap and its default variables
 @import "node_modules/bootstrap/scss/bootstrap";

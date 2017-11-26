@@ -1,3 +1,6 @@
+.fa-inverse {
+  color: #d6beab; }
+
 /*!
  * Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
  * Copyright 2011-2017 The Bootstrap Authors
@@ -110,7 +113,7 @@ body {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #212529;
+  color: #6D5546;
   text-align: left;
   background-color: #6D5546; }
 
@@ -2154,7 +2157,7 @@ tbody.collapse.show {
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
   font-size: 0.875rem;
-  color: #212529;
+  color: #6D5546;
   text-align: left;
   list-style: none;
   background-color: #f6ece4;
@@ -3472,7 +3475,7 @@ tbody.collapse.show {
     text-decoration: none;
     background-color: #f8f9fa; }
   .list-group-item-action:active {
-    color: #212529;
+    color: #6D5546;
     background-color: #e9ecef; }
 
 .list-group-item {
@@ -4017,7 +4020,7 @@ button.close {
 
 .popover-body {
   padding: 0.5rem 0.75rem;
-  color: #212529; }
+  color: #6D5546; }
 
 .carousel {
   position: relative; }

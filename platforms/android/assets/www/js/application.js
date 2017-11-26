@@ -1,4 +1,4 @@
-var serverUrl = "http://localhost/vakdert";
+var serverUrl = "http://doghunter.ddns.net/vakdert";
 var user;
 
 function tryLogin()
