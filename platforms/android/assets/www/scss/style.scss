@@ -1,0 +1,121 @@
+$brown:   #6D5546 !default;
+$caqui:   #d6beab !default;
+$dark-brown: #44372e !default;
+$light-caqui: #f6ece4 !default;
+
+$colors: (
+  primary: $dark-brown,
+  brown: $brown,
+  caqui: $caqui,
+  light: $caqui,
+  lighter: $light-caqui,
+  darker: $dark-brown,
+);
+
+$theme-colors: (
+  primary: $brown,
+  dark: $brown,
+  light: $caqui,
+  lighter: $light-caqui,
+  darker: $dark-brown,
+);
+
+
+$body-bg: $brown;
+
+$navbar-light-color:                rgba($caqui,.5) !default;
+$navbar-light-hover-color:          rgba($caqui,.7) !default;
+$navbar-light-active-color:         rgba($caqui,.9) !default;
+$navbar-light-disabled-color:       rgba($caqui,.3) !default;
+$navbar-light-toggler-icon-bg:      str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$navbar-light-toggler-border-color: rgba($caqui,.1) !default;
+
+
+$list-group-bg:                     $caqui;
+
+$list-group-action-color:           $brown;
+$list-group-action-hover-color:     $brown;
+
+
+$font-size-base:              0.875rem !default; // Assumes the browser default, typically `16px`
+
+$input-bg:                              $light-caqui !default;
+$input-color:                           $brown !default;
+$input-border-color:                    $dark-brown !default;
+$input-placeholder-color:               $caqui !default;
+
+$input-group-addon-color:               $caqui !default;
+$input-group-addon-bg:                  $brown !default;
+$input-group-addon-border-color:        $dark-brown !default;
+
+$dropdown-bg:                       $light-caqui !default;
+$dropdown-link-color:               $brown !default;
+
+// Bootstrap and its default variables
+@import "node_modules/bootstrap/scss/bootstrap";
+
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: $color;
+    background-color: darken($background, 10%);
+        border-color: darken($border, 12%);
+  }
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      background-color: $background;
+          border-color: $border;
+    }
+  }
+
+  .badge {
+    color: $background;
+    background-color: $color;
+  }
+}
+
+//Put modifiers AFTER mixin button-variant function
+.btn-primary {
+  @include button-variant($caqui, $brown, $dark-brown);
+}
+
+
+// List group
+
+$list-group-border-color:           rgba($black,.125) !default;
+$list-group-border-width:           $border-width !default;
+$list-group-border-radius:          $border-radius !default;
+
+$list-group-item-padding-y:         .75rem !default;
+$list-group-item-padding-x:         1.25rem !default;
+
+$list-group-hover-bg:               $gray-100 !default;
+$list-group-active-color:           $component-active-color !default;
+$list-group-active-bg:              $component-active-bg !default;
+$list-group-active-border-color:    $list-group-active-bg !default;
+
+$list-group-disabled-color:         $gray-600 !default;
+$list-group-disabled-bg:            $list-group-bg !default;
+
+$list-group-action-hover-color:     $list-group-action-color !default;
+
+$list-group-action-active-color:    $body-color !default;
+$list-group-action-active-bg:       $gray-200 !default;
