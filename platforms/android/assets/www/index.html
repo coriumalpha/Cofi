@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
-        <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="./css/bootstrap.css">
         <link rel="stylesheet" href="./css/style.css">
         <link rel="stylesheet" href="./css/cofi.css">
@@ -24,111 +25,7 @@
         <script src="./js/jsrender.js"></script>
         <script src="./js/application.js"></script>
 
-
-        <script type="text/javascript">
-
-            $(function() {
-                if (sessionStorage.getItem("user") !== "true") {
-                    initLogin();
-                } else {
-                    initListBares();
-                }
-            });
-
-            function initLogin() {
-                $("#navbarContainer").html('');
-                $("#mainContainer").load("./login.html", function() {
-                    $("#submitLogin").click(function(e) {
-                        checkLogin(); 
-                    }); 
-                });
-            }
-
-            function initListBares() {
-                initNavbar();
-                $("#mainContainer").load("./listBares.html", function() {
-                    loadListView();
-                });
-            }
-
-            function initNavbar() {
-                $("#navbarContainer").load("./navbar.html", function() {
-                    $("#navbar-logout").click(function() {
-                        closeSession();
-                    });       
-                });
-            }
-
-            function checkLogin() {
-                if(!($("#loginForm")[0].checkValidity())) {
-                    $("#loginForm")[0].reportValidity()
-                }
-                if($('#username').val().length > 0 && $('#password').val().length > 0)
-                {
-                    $.ajax({url: serverUrl + '/api.php',
-                        data: {action : 'login', formData : $('#loginForm').serialize()},
-                        type: 'post',                   
-                        async: 'true',
-                        dataType: 'json',
-                        success: function (result) {
-                            if(result.status) {
-                                sessionStorage.setItem("user", true);
-                                initListBares();                        
-                            } else {
-                                $(".invalid-feedback").removeClass("d-none");
-                                $("#loginForm input").addClass("is-invalid");
-                            }
-                        },
-                        error: function (request,error) {          
-                            console.log('Error de red/servidor. (' + request.statusText + ')');
-                        }
-                    });                   
-                }       
-            }
-        </script>
-
-        <script id="listBares-template" type="text/x-jsrender">
-            {{for entry}}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <div class="d-flex">
-                        <h5 class="mb-2 text-darker">
-                            <i class="fa fa-fw fa-coffee text-darker " aria-hidden="true"></i> {{:nombre}}
-                        </h5>
-                    </div>
-                    <div class="d-flex">
-                        <small class="justify-content-around">
-                            <!--div class="p-1 d-inline-flex">
-                                <i class="fa fa-fw fa-puzzle-piece" aria-hidden="true"></i>
-                            </div>
-                            <div class="p-1 d-inline-flex">
-                                <i class="fa fa-fw fa-credit-card" aria-hidden="true"></i>
-                            </div>
-                            <div class="p-1 d-inline-flex">
-                                <i class="fa fa-fw fa-cutlery" aria-hidden="true"></i>
-                            </div-->
-                            <div class="p-1 d-inline-flex">
-                                <i class="{{:plugs}}" aria-hidden="true"></i>
-                            </div>
-                        </small>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <div class="">
-                        <span><i class="fa fa-wifi fa-fw text-darker" aria-hidden="true"></i> {{:essid}}</span>
-                    </div>
-                    <div class="">
-                        <span><i class="fa fa-key fa-fw text-darker" aria-hidden="true"></i> {{:wifiPass}}</span>
-                    </div>
-                </div>
-                <p class="mb-1"></p>
-                <p class="mb-1 siteAddress">
-                    <i class="fa fa-globe fa-fw text-darker" aria-hidden="true"></i>
-                     {{:location}}
-                </p>
-            </a>
-            {{/for}}
-        </script>
+        <script id="listBares-template" type="text/x-jsrender"></script>
     
     </body>
 

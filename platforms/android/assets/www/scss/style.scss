@@ -1,5 +1,6 @@
 $brown:   #6D5546 !default;
 $caqui:   #d6beab !default;
+$dark-caqui: #ad9380 !default;
 $dark-brown: #44372e !default;
 $light-caqui: #f6ece4 !default;
 
@@ -22,6 +23,7 @@ $theme-colors: (
 
 
 $body-bg: $brown;
+$body-color:                $brown !default;
 
 $navbar-light-color:                rgba($caqui,.5) !default;
 $navbar-light-hover-color:          rgba($caqui,.7) !default;
@@ -42,7 +44,7 @@ $font-size-base:              0.875rem !default; // Assumes the browser default,
 $input-bg:                              $light-caqui !default;
 $input-color:                           $brown !default;
 $input-border-color:                    $dark-brown !default;
-$input-placeholder-color:               $caqui !default;
+$input-placeholder-color:               $dark-caqui !default;
 
 $input-group-addon-color:               $caqui !default;
 $input-group-addon-bg:                  $brown !default;
@@ -50,6 +52,10 @@ $input-group-addon-border-color:        $dark-brown !default;
 
 $dropdown-bg:                       $light-caqui !default;
 $dropdown-link-color:               $brown !default;
+
+.fa-inverse {
+    color: $caqui;
+}
 
 // Bootstrap and its default variables
 @import "node_modules/bootstrap/scss/bootstrap";

@@ -7,3 +7,8 @@
 .invalid-feedback {
     display: block;
 }
+
+#mainContainer {
+	margin-top: 4.5rem;
+	margin-bottom: 3rem; /*Cuidaillo con esta...*/
+}
