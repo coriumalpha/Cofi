@@ -1,5 +1,5 @@
-var serverUrl = "http://doghunter.ddns.net/vakdert";
-//var serverUrl = "http://localhost/vakdert";
+//var serverUrl = "http://doghunter.ddns.net/vakdert";
+var serverUrl = "http://localhost/vakdert";
 var user;
 var lastBarList;
 
@@ -79,7 +79,7 @@ function initBarEditorForId(id) {
         $("#essid").val(bar.essid);
         $("#wifiPass").val(bar.wifiPass);
         $("#location").val(bar.location);
-        $("#barIdContainer").html('<input type="hidden" name="barId" value="' + bar.barId + '">');
+        $("#barIdContainer").html('<input type="hidden" name="barId" id="barId" value="' + bar.barId + '">');
 
         if(bar.plugs == 1) {
             $("#plugs-true").parent().addClass("active");
@@ -93,7 +93,7 @@ function initBarEditorForId(id) {
         //Sequence needs to be in order
         $("#submitContainer").html($("#updateStrip").html());
         $("#deleteBar").click(function () {
-            confirm();
+            deleteBar();
         });
         $("#submitBar").click(function () {
             insertOrUpdateBar();
@@ -265,44 +265,38 @@ function insertOrUpdateBar() {
     return false; 
 }
 
-$(document).on('pageinit', '#siteDetails', function()
-{  
-    $(document).on('click', '#u_delete', function()
-    { 
-        var deleteConfirmation = 'Se va a proceder a eliminar el registro.';
+function deleteBar() {
+    var deleteConfirmation = 'Se va a proceder a eliminar el registro.';
 
-        if(confirm(deleteConfirmation))
+    if(confirm(deleteConfirmation))
+    {
+        if($('#barId').val().length > 0)
         {
-            if($('#u_barId').val().length > 0)
-            {
-                    $.ajax({url: serverUrl + '/api.php',
-                        data:   {
-                            action : 'deleteLocation', 
-                            locationId: $('#u_barId').val()
-                            },
-                        type: 'post',                   
-                        async: 'true',
-                        dataType: 'json',
-                        success: function (result) {
-                            if(result.status) {
-                                loadListView();
-                                $.mobile.changePage("#siteList");
-                            } else {
-                                alert(result.message); 
-                            }
+                $.ajax({url: serverUrl + '/api.php',
+                    data:   {
+                        action : 'deleteLocation', 
+                        locationId: $('#barId').val()
                         },
-                        error: function (request,error) {          
-                            alert('Error de red/servidor.');
+                    type: 'post',                   
+                    async: 'true',
+                    dataType: 'json',
+                    success: function (result) {
+                        if(result.status) {
+                            initListBares();
+                        } else {
+                            alert(result.message); 
                         }
-                    });                   
-            } else {
-                alert('Campos vacíos');
-            }
-        }           
-        return false; 
-    });    
-});
-
+                    },
+                    error: function (request,error) {          
+                        alert('Error de red/servidor.');
+                    }
+                });                   
+        } else {
+            alert('Campos vacíos');
+        }
+    }           
+    return false; 
+}
 
 
 

@@ -1,6 +1,7 @@
-var serverUrl = "http://doghunter.ddns.net/vakdert";
-//var serverUrl = "http://localhost/vakdert";
+//var serverUrl = "http://doghunter.ddns.net/vakdert";
+var serverUrl = "http://localhost/vakdert";
 var user;
+var lastBarList;
 
 $(function() {
     if (sessionStorage.getItem("user") !== "true") {
@@ -55,9 +56,50 @@ function initListBares() {
 function initInsertBar() {
     $("#mainContainer").load("./editorBares.html", function() {
         $("#submitBar").click(function () {
-            insertBar();
+            insertOrUpdateBar();
         });
     });
+}
+
+function initBarEditorForId(id) {
+    $("#mainContainer").load("./editorBares.html", function() {
+        $("#submitBarName").text("Actualizar");
+
+        var barData = $.grep(lastBarList, function(bar, idx) {
+            return bar.barId == id;
+        });
+        
+        if (barData.length <= 0) { //TODO: Handle error
+            initListBares(); //Miedo me da esto...
+            return;
+        }
+
+        var bar = barData[0];
+        $("#name").val(bar.nombre);
+        $("#essid").val(bar.essid);
+        $("#wifiPass").val(bar.wifiPass);
+        $("#location").val(bar.location);
+        $("#barIdContainer").html('<input type="hidden" name="barId" id="barId" value="' + bar.barId + '">');
+
+        if(bar.plugs == 1) {
+            $("#plugs-true").parent().addClass("active");
+            $("#plugs-true").prop('checked', true);
+        } else {        
+            $("#plugs-false").parent().addClass("active");
+            $("#plugs-false").prop('checked', true);                
+        }
+        
+
+        //Sequence needs to be in order
+        $("#submitContainer").html($("#updateStrip").html());
+        $("#deleteBar").click(function () {
+            deleteBar();
+        });
+        $("#submitBar").click(function () {
+            insertOrUpdateBar();
+        });
+
+    });    
 }
 
 function checkLogin() {
@@ -103,8 +145,9 @@ function loadListView() {
                 } else {
                     plugsData = 'fa fa-battery-full fa-fw';
                 }
-                result[i].plugs = plugsData;
+                result[i].plugsClass = plugsData;
             }
+            lastBarList = result;
             renderBarList(result);             
         },
         error: function (request,error) {          
@@ -181,15 +224,16 @@ function loadDetailedView(id) {
 }
 
 
-function insertBar() {
+function insertOrUpdateBar() {
     if(!($("#barEditorForm")[0].checkValidity())) {
         $("#barEditorForm")[0].reportValidity()
     }
 
     if($('#name').val().length > 0 && $('#essid').val().length > 0 && $('#wifiPass').val().length > 0 && $('#location').val().length > 0)
     {
+        if(typeof($('#plugs-radios input:radio:checked').val()) !== "undefined") {
             $.ajax({url: serverUrl + '/api.php',
-                data: { action: 'insert', formData: $('#barEditorForm').serialize() },
+                data: { action: 'insertOrUpdate', formData: $('#barEditorForm').serialize() },
                 type: 'post',                   
                 async: 'true',
                 dataType: 'json',
@@ -204,28 +248,41 @@ function insertBar() {
                     console.log('Error de red/servidor.');
                 }
             });                   
+        } else {
+            //TODO: Sustituir por outline de error de validación consitente con el resto de elementos
+            $('#plugs-false').parent().addClass("active");
+            $('#plugs-true').parent().addClass("active");
+            setTimeout(function() {
+                $('#plugs-false').parent().removeClass("active");
+                $('#plugs-true').parent().removeClass("active");
+            }, 300);
+            console.log("enchufes sin seleccionar");
+        }
+
     } else {
         alert('Campos vacíos');
     }           
     return false; 
 }
 
+function deleteBar() {
+    var deleteConfirmation = 'Se va a proceder a eliminar el registro.';
 
-$(document).on('pageinit', '#siteDetails', function()
-{  
-    $(document).on('click', '#u_submit', function()
-    { 
-        if($('#u_name').val().length > 0 && $('#u_essid').val().length > 0 && $('#u_wifiPass').val().length > 0 && $('#u_location').val().length > 0 && $('#u_barId').val().length > 0)
+    if(confirm(deleteConfirmation))
+    {
+        if($('#barId').val().length > 0)
         {
                 $.ajax({url: serverUrl + '/api.php',
-                    data: {action : 'insert', formData : $('#updateForm').serialize()},
+                    data:   {
+                        action : 'deleteLocation', 
+                        locationId: $('#barId').val()
+                        },
                     type: 'post',                   
                     async: 'true',
                     dataType: 'json',
                     success: function (result) {
                         if(result.status) {
-                            loadListView();
-                            $.mobile.changePage("#siteList");
+                            initListBares();
                         } else {
                             alert(result.message); 
                         }
@@ -236,50 +293,10 @@ $(document).on('pageinit', '#siteDetails', function()
                 });                   
         } else {
             alert('Campos vacíos');
-        }           
-        return false; 
-    });    
-});
-
-
-$(document).on('pageinit', '#siteDetails', function()
-{  
-    $(document).on('click', '#u_delete', function()
-    { 
-        var deleteConfirmation = 'Se va a proceder a eliminar el registro.';
-
-        if(confirm(deleteConfirmation))
-        {
-            if($('#u_barId').val().length > 0)
-            {
-                    $.ajax({url: serverUrl + '/api.php',
-                        data:   {
-                            action : 'deleteLocation', 
-                            locationId: $('#u_barId').val()
-                            },
-                        type: 'post',                   
-                        async: 'true',
-                        dataType: 'json',
-                        success: function (result) {
-                            if(result.status) {
-                                loadListView();
-                                $.mobile.changePage("#siteList");
-                            } else {
-                                alert(result.message); 
-                            }
-                        },
-                        error: function (request,error) {          
-                            alert('Error de red/servidor.');
-                        }
-                    });                   
-            } else {
-                alert('Campos vacíos');
-            }
-        }           
-        return false; 
-    });    
-});
-
+        }
+    }           
+    return false; 
+}
 
 
 

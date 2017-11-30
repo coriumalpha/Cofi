@@ -3,9 +3,11 @@ $caqui:   #d6beab !default;
 $dark-caqui: #ad9380 !default;
 $dark-brown: #44372e !default;
 $light-caqui: #f6ece4 !default;
+$red-purple: #8a2c40 !default;
 
 $colors: (
   primary: $dark-brown,
+  danger: $red-purple,
   brown: $brown,
   caqui: $caqui,
   light: $caqui,
@@ -15,6 +17,7 @@ $colors: (
 
 $theme-colors: (
   primary: $brown,
+  danger: $red-purple,
   dark: $brown,
   light: $caqui,
   lighter: $light-caqui,
@@ -102,7 +105,14 @@ $dropdown-link-color:               $brown !default;
 .btn-primary {
   @include button-variant($caqui, $brown, $dark-brown);
 }
+.btn-danger {
+  @include button-variant($light-caqui, $red-purple, $dark-brown);
+}
 
+.card-header {
+  border-bottom: none;
+  background-color: $caqui;
+}
 
 // List group
 
