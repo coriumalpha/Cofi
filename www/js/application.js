@@ -1,5 +1,5 @@
-//var serverUrl = "http://doghunter.ddns.net/vakdert";
-var serverUrl = "http://localhost/vakdert";
+var serverUrl = "http://doghunter.ddns.net/vakdert";
+//var serverUrl = "http://localhost/vakdert";
 var user;
 var lastBarList;
 
