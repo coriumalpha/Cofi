@@ -1,13 +1,12 @@
 var serverUrl = "http://doghunter.ddns.net/vakdert";
 //var serverUrl = "http://localhost/vakdert";
-var apvHash = "SJgO8t9SUmPstxxIgh1NHdSOgVvJC36KcVXP43bShpNerRGzaRttSD9AAJgHpvam";
+var apvHash = "beta-r1.0.3";
 var user;
 var lastBarList;
 
 $(function() {
-    if (sessionStorage.getItem("user") !== "true" || document.cookie.length <= 0) {
-        if (localStorage.getItem("PHPSESSID") != null) {
-            Cookies.set("PHPSESSID", localStorage.getItem("PHPSESSID"));
+    if (sessionStorage.getItem("user") !== "true") {
+        if (localStorage.getItem("isSessionAlive") != null) {
             $.when(checkSessionAlive()).done(function(result) {
                 sessionStorage.setItem("user", "true");
                 initNavbar();
@@ -202,16 +201,17 @@ function checkLogin() {
                 formData : $('#loginForm').serialize(),
                 apvHash: apvHash
             },
+            xhrFields: { withCredentials: true },
             type: 'post',                   
             async: 'true',
             dataType: 'json',
-            success: function (result) {
+            success: function (result, status, xhr) {
                 if(result.code > 0) {
                     localStorage.clear();
                     sessionStorage.clear();
                     sessionStorage.setItem("user", true);
                     if ($("#persistSessionCheck").prop('checked')) {
-                        localStorage.setItem("PHPSESSID", Cookies.get("PHPSESSID"));
+                        localStorage.setItem("isSessionAlive", true);
                     }
                     initNavbar();
                     initListBares();                        
