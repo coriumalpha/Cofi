@@ -1,5 +1,6 @@
-//var serverUrl = "http://doghunter.ddns.net/vakdert";
-var serverUrl = "http://localhost/vakdert";
+var serverUrl = "http://doghunter.ddns.net/vakdert";
+//var serverUrl = "http://localhost/vakdert";
+var apvHash = "SJgO8t9SUmPstxxIgh1NHdSOgVvJC36KcVXP43bShpNerRGzaRttSD9AAJgHpvam";
 var user;
 var lastBarList;
 
@@ -55,6 +56,7 @@ function initListBares() {
 
 function initInsertBar() {
     $("#mainContainer").load("./editorBares.html", function() {
+        $("#barEditorTitle").text("Nuevo Cofi");
         $("#submitBar").click(function () {
             insertOrUpdateBar();
         });
@@ -63,6 +65,7 @@ function initInsertBar() {
 
 function initBarEditorForId(id) {
     $("#mainContainer").load("./editorBares.html", function() {
+        $("#barEditorTitle").text("Editar Cofi");
         $("#submitBarName").text("Actualizar");
 
         var barData = $.grep(lastBarList, function(bar, idx) {
@@ -108,19 +111,33 @@ function checkLogin() {
     }
     if($('#username').val().length > 0 && $('#password').val().length > 0)
     {
-        $.ajax({url: serverUrl + '/api.php',
-            data: {action : 'login', formData : $('#loginForm').serialize()},
+        $.ajax({
+            url: serverUrl + '/api.php',
+            data: {
+                action : 'login',
+                formData : $('#loginForm').serialize(),
+                apvHash: apvHash
+            },
             type: 'post',                   
             async: 'true',
             dataType: 'json',
             success: function (result) {
-                if(result.status) {
+                if(result.code > 0) {
                     sessionStorage.setItem("user", true);
                     initNavbar();
                     initListBares();                        
                 } else {
-                    $(".invalid-feedback").removeClass("d-none");
-                    $("#loginForm input").addClass("is-invalid");
+                    switch(result.code) {
+                        case (-1):
+                            $(".invalid-feedback").removeClass("d-none");
+                            $("#loginForm input").addClass("is-invalid");
+                            break;
+                        case (-2):
+                            $("#error-display").text(result.message);
+                            $("#error-display").removeClass("d-none");
+                            $("#loginForm input").addClass("is-invalid");
+                           break;
+                    }
                 }
             },
             error: function (request,error) {          

@@ -1,16 +1,35 @@
-var serverUrl = "http://doghunter.ddns.net/vakdert";
-//var serverUrl = "http://localhost/vakdert";
+//var serverUrl = "http://doghunter.ddns.net/vakdert";
+var serverUrl = "http://localhost/vakdert";
+var apvHash = "SJgO8t9SUmPstxxIgh1NHdSOgVvJC36KcVXP43bShpNerRGzaRttSD9AAJgHpvam";
 var user;
 var lastBarList;
 
 $(function() {
-    if (sessionStorage.getItem("user") !== "true") {
+    if (sessionStorage.getItem("user") !== "true" || document.cookie.length <= 0) {
         initLogin();
     } else {
         initNavbar();
         initListBares();
     }
 });
+
+function showCustomAlert(title, message) {
+    var tmpl = $("#modal-template").html();
+        $("#modal-template").load("./scripts/modal.tmpl.html", function() {
+        var modalTmpl = $.templates("#modal-template");
+        app = { 
+                entry: {
+                    bodyContent: message,
+                }
+            };
+        if (title !== "") {
+            app.entry.modalTitle = [title];
+        }
+        var parsedTemplate = modalTmpl.render(app);
+        $("#modalContainer").html(parsedTemplate);
+        $("#customModal").modal('show');
+    });
+}
 
 function initNavbar() {
     $("#navbarContainer").load("./navbar.html", function() {
@@ -40,7 +59,18 @@ function changeNavbarActive(activeId) {
 
 function initLogin() {
     $("#navbarContainer").html('');
-    $("#mainContainer").load("./login.html", function() {
+    $("#mainContainer").load("./login.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
+        $("#loginForm").bind("keypress", function(event) {
+            if(event.which == 13) {
+                event.preventDefault();
+                checkLogin();
+            }
+        });
         $("#submitLogin").click(function(e) {
             checkLogin(); 
         }); 
@@ -48,13 +78,25 @@ function initLogin() {
 }
 
 function initListBares() {
-    $("#mainContainer").load("./listBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./listBares.html", function(response, status, xhr) {
+        if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
         loadListView();
     });
 }
 
 function initInsertBar() {
-    $("#mainContainer").load("./editorBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./editorBares.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
+        $("#barEditorTitle").text("Nuevo Cofi");
         $("#submitBar").click(function () {
             insertOrUpdateBar();
         });
@@ -62,7 +104,14 @@ function initInsertBar() {
 }
 
 function initBarEditorForId(id) {
-    $("#mainContainer").load("./editorBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./editorBares.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
+        $("#barEditorTitle").text("Editar Cofi");
         $("#submitBarName").text("Actualizar");
 
         var barData = $.grep(lastBarList, function(bar, idx) {
@@ -108,23 +157,43 @@ function checkLogin() {
     }
     if($('#username').val().length > 0 && $('#password').val().length > 0)
     {
-        $.ajax({url: serverUrl + '/api.php',
-            data: {action : 'login', formData : $('#loginForm').serialize()},
+        $.ajax({
+            url: serverUrl + '/api.php',
+            data: {
+                action : 'login',
+                formData : $('#loginForm').serialize(),
+                apvHash: apvHash
+            },
             type: 'post',                   
             async: 'true',
             dataType: 'json',
             success: function (result) {
-                if(result.status) {
+                if(result.code > 0) {
+                    sessionStorage.clear();
                     sessionStorage.setItem("user", true);
+                    localStorage.clear();
+                    localStorage.setItem("PHPSESSID", Cookies.get("PHPSESSID"));
                     initNavbar();
                     initListBares();                        
                 } else {
-                    $(".invalid-feedback").removeClass("d-none");
-                    $("#loginForm input").addClass("is-invalid");
+                    switch(result.code) {
+                        case (-1):
+                            $(".invalid-feedback").removeClass("d-none");
+                            $("#loginForm input").addClass("is-invalid");
+                            break;
+                        case (-2):
+                            $("#error-display").text(result.message);
+                            $("#error-display").removeClass("d-none");
+                            $("#loginForm input").addClass("is-invalid");
+                           break;
+                        default:
+                            showCustomAlert('Error en servidor', result.message);
+                            break;
+                    }
                 }
             },
-            error: function (request,error) {          
-                console.log('Error de red/servidor. (' + request.statusText + ')');
+            error: function (request,error) {  
+                showCustomAlert('Error', 'Error de red/servidor. (' + request.statusText + ')');
             }
         });                   
     }       
@@ -132,23 +201,32 @@ function checkLogin() {
 
 function loadListView() {
     $.ajax({url: serverUrl + '/api.php',
-        data: {action : 'showList',},
+        data: {
+            action : 'showList',
+            },
         type: 'post',                   
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            for (var i = 0; i < result.length; i++) {
-                if(result[i].plugs == 1) {
-                    plugsData = 'fa fa-plug fa-fw';
-                } else if(result[i].plugs == 2) {
-                    plugsData = 'fa fa-clock-o fa-fw';
-                } else {
-                    plugsData = 'fa fa-battery-full fa-fw';
+            if(typeof(result.code) == "undefined") {
+                for (var i = 0; i < result.length; i++) {
+                    if(result[i].plugs == 1) {
+                        plugsData = 'fa fa-plug fa-fw';
+                    } else if(result[i].plugs == 2) {
+                        plugsData = 'fa fa-clock-o fa-fw';
+                    } else {
+                        plugsData = 'fa fa-battery-full fa-fw';
+                    }
+                    result[i].plugsClass = plugsData;
                 }
-                result[i].plugsClass = plugsData;
+               lastBarList = result;
+               renderBarList(result);             
+            } else if(result.code == 10) {
+                sessionStorage.clear();
+                initLogin();
+            } else {
+                showCustomAlert("Error de servidor", result.message);
             }
-            lastBarList = result;
-            renderBarList(result);             
         },
         error: function (request,error) {          
             alert('Error de red/servidor.');
@@ -157,7 +235,7 @@ function loadListView() {
 }
 
 function renderBarList(barlist) {
-    $("#listBares-template").load("./scripts/listBares.tmpl.html", function() {
+   $("#listBares-template").load("./scripts/listBares.tmpl.html", function() {
         var baresTemplate = $.templates("#listBares-template");
         app = { entry: barlist };
         var parsedTemplate = baresTemplate.render(app);
@@ -172,53 +250,22 @@ function closeSession() {
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            if(result.status) {
+            //if(result.status) {
+            if(result.code == 1) {
                 sessionStorage.clear();
-                initLogin()
+                initLogin();
+            } else if(result.code == 10) {
+                sessionStorage.clear();
+                initLogin();
+                showCustomAlert("Error en servidor", result.message);
             } else {
-                console.log("Cannot logout");
+                sessionStorage.clear();
+                initLogin();
+                showCustomAlert('Error en servidor', 'La sesión remota no ha podido ser destruida: ' + result.message);
             }           
         },
         error: function (request,error) {          
-            alert('Error de red/servidor.');
-        }
-    });
-}
-
-
-function loadDetailedView(id) {
-
-    $.mobile.changePage( "#siteDetails", { transition: "slidefade"});
-
-    $.ajax({url: serverUrl + '/api.php',
-        data: {action : 'showDetailed', ident : id,},
-        type: 'post',                   
-        async: 'true',
-        dataType: 'json',
-        success: function (result) {
-            $('#tableDetailsContent').html("");
-            /*$.each(result[0], function(key, result))
-            {*/
-                $.each(result[0], function(name, value)
-                {
-                    switch(name)
-                    {
-                        case "nombre":
-                            $('#u_name').val(value);
-                            return;
-                        case "plugs":
-                            $('#u_' + name).val(value).flipswitch('refresh');
-                            return;
-                        case "idHost":
-                            return;
-                    }
-                    $('#u_' + name).val(value);
-                });
-            //}
-            //$('#listView').listview('refresh');              
-        },
-        error: function (request,error) {          
-            alert('Error de red/servidor.');
+            showCustomAlert('Error', 'Error de red/servidor.');
         }
     });
 }
@@ -238,14 +285,18 @@ function insertOrUpdateBar() {
                 async: 'true',
                 dataType: 'json',
                 success: function (result) {
-                    if(result.status) {
+                    if(result.code == 1) {
                         initListBares();
+                    } else if(result.code == 10) {
+                        sessionStorage.clear();
+                        initLogin();
+                        showCustomAlert("Error en servidor", result.message);
                     } else {
-                        console.log(result.message); 
+                        showCustomAlert("Error en servidor", result.message);
                     }
                 },
-                error: function (request,error) {          
-                    console.log('Error de red/servidor.');
+                error: function (request,error) {
+                    showCustomAlert("Error", "Error de red/servidor.");
                 }
             });                   
         } else {
@@ -281,18 +332,22 @@ function deleteBar() {
                     async: 'true',
                     dataType: 'json',
                     success: function (result) {
-                        if(result.status) {
+                        if(result.code == 1) {
                             initListBares();
+                        } else if(result.code == 10) {
+                            sessionStorage.clear();
+                            initLogin();
+                            showCustomAlert("Error en servidor", result.message);
                         } else {
-                            alert(result.message); 
+                            showCustomAlert('Error en servidor', result.message);
                         }
                     },
                     error: function (request,error) {          
-                        alert('Error de red/servidor.');
+                        showCustomAlert('Error', 'Error de red/servidor.');
                     }
                 });                   
         } else {
-            alert('Campos vacíos');
+            showCustomAlert('Error', 'El identificador del bar que desea eliminar no ha podido ser determinado.');
         }
     }           
     return false; 

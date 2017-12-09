@@ -56,6 +56,15 @@ $input-group-addon-border-color:        $dark-brown !default;
 $dropdown-bg:                       $light-caqui !default;
 $dropdown-link-color:               $brown !default;
 
+/* Modals */
+
+$modal-content-bg:                  $caqui;
+$modal-content-border-color:        rgba($dark-brown,.2) !default;
+$modal-backdrop-bg:                 $dark-brown !default;
+$modal-backdrop-opacity:            .5 !default;
+$modal-header-border-color:         $brown;
+$modal-footer-border-color:         $modal-header-border-color;
+
 .fa-inverse {
     color: $caqui;
 }
@@ -114,7 +123,18 @@ $dropdown-link-color:               $brown !default;
   background-color: $caqui;
 }
 
-// List group
+.modal-dialog {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+  @media(max-width: 768px) {
+    min-height: calc(100vh - 20px);
+  }
+}
+
+/* List group  */
 
 $list-group-border-color:           rgba($black,.125) !default;
 $list-group-border-width:           $border-width !default;
