@@ -2485,7 +2485,7 @@ tbody.collapse.show {
   height: 1rem;
   pointer-events: none;
   user-select: none;
-  background-color: #ddd;
+  background-color: #f6ece4;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 50% 50%; }

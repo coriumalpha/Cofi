@@ -1,12 +1,23 @@
-//var serverUrl = "http://doghunter.ddns.net/vakdert";
-var serverUrl = "http://localhost/vakdert";
+var serverUrl = "http://doghunter.ddns.net/vakdert";
+//var serverUrl = "http://localhost/vakdert";
 var apvHash = "SJgO8t9SUmPstxxIgh1NHdSOgVvJC36KcVXP43bShpNerRGzaRttSD9AAJgHpvam";
 var user;
 var lastBarList;
 
 $(function() {
     if (sessionStorage.getItem("user") !== "true" || document.cookie.length <= 0) {
-        initLogin();
+        if (localStorage.getItem("PHPSESSID") != null) {
+            Cookies.set("PHPSESSID", localStorage.getItem("PHPSESSID"));
+            $.when(checkSessionAlive()).done(function(result) {
+                sessionStorage.setItem("user", "true");
+                initNavbar();
+                initListBares();        
+            }).fail(function(result) {
+                initLogin();
+            });
+        } else {
+            initLogin();
+        }
     } else {
         initNavbar();
         initListBares();
@@ -118,8 +129,9 @@ function initBarEditorForId(id) {
             return bar.barId == id;
         });
         
-        if (barData.length <= 0) { //TODO: Handle error
-            initListBares(); //Miedo me da esto...
+        if (barData.length <= 0) {
+            initListBares();
+            showCustomAlert("Error en cliente", "El identificador del bar que está intentando editar es incorrecto.");
             return;
         }
 
@@ -151,6 +163,32 @@ function initBarEditorForId(id) {
     });    
 }
 
+function checkSessionAlive() {
+    var dfd = jQuery.Deferred();
+
+    $.ajax({
+        url: serverUrl + '/api.php',
+        data: {
+            action : 'isSessionAlive',
+        },
+        type: 'post',                   
+        async: 'true',
+        dataType: 'json',
+        success: function (result) {
+            if(result.code == 1) {
+                dfd.resolve();
+            } else {
+                dfd.reject(result);
+            }           
+        },
+        error: function (request,error) {          
+            dfd.reject();
+        }
+    });
+
+    return dfd.promise();
+}
+
 function checkLogin() {
     if(!($("#loginForm")[0].checkValidity())) {
         $("#loginForm")[0].reportValidity()
@@ -169,10 +207,12 @@ function checkLogin() {
             dataType: 'json',
             success: function (result) {
                 if(result.code > 0) {
+                    localStorage.clear();
                     sessionStorage.clear();
                     sessionStorage.setItem("user", true);
-                    localStorage.clear();
-                    localStorage.setItem("PHPSESSID", Cookies.get("PHPSESSID"));
+                    if ($("#persistSessionCheck").prop('checked')) {
+                        localStorage.setItem("PHPSESSID", Cookies.get("PHPSESSID"));
+                    }
                     initNavbar();
                     initListBares();                        
                 } else {
@@ -200,7 +240,8 @@ function checkLogin() {
 }
 
 function loadListView() {
-    $.ajax({url: serverUrl + '/api.php',
+    $.ajax({
+        url: serverUrl + '/api.php',
         data: {
             action : 'showList',
             },
@@ -221,9 +262,10 @@ function loadListView() {
                 }
                lastBarList = result;
                renderBarList(result);             
-            } else if(result.code == 10) {
+            } else if(result.code == -10) {
                 sessionStorage.clear();
                 initLogin();
+                showCustomAlert("Sesión Caducada", "Inice sesión para acceder al contenido.");
             } else {
                 showCustomAlert("Error de servidor", result.message);
             }
@@ -244,22 +286,22 @@ function renderBarList(barlist) {
 }
 
 function closeSession() {
-    $.ajax({url: serverUrl + '/api.php',
+    $.ajax({
+        url: serverUrl + '/api.php',
         data: {action : 'logout',},
         type: 'post',                   
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            //if(result.status) {
+            localStorage.clear();
+            sessionStorage.clear();
+
             if(result.code == 1) {
-                sessionStorage.clear();
                 initLogin();
-            } else if(result.code == 10) {
-                sessionStorage.clear();
+            } else if(result.code == -10) {
                 initLogin();
                 showCustomAlert("Error en servidor", result.message);
             } else {
-                sessionStorage.clear();
                 initLogin();
                 showCustomAlert('Error en servidor', 'La sesión remota no ha podido ser destruida: ' + result.message);
             }           
@@ -287,7 +329,7 @@ function insertOrUpdateBar() {
                 success: function (result) {
                     if(result.code == 1) {
                         initListBares();
-                    } else if(result.code == 10) {
+                    } else if(result.code == -10) {
                         sessionStorage.clear();
                         initLogin();
                         showCustomAlert("Error en servidor", result.message);
@@ -300,7 +342,6 @@ function insertOrUpdateBar() {
                 }
             });                   
         } else {
-            //TODO: Sustituir por outline de error de validación consitente con el resto de elementos
             $('#plugs-false').parent().addClass("active");
             $('#plugs-true').parent().addClass("active");
             setTimeout(function() {
@@ -334,7 +375,7 @@ function deleteBar() {
                     success: function (result) {
                         if(result.code == 1) {
                             initListBares();
-                        } else if(result.code == 10) {
+                        } else if(result.code == -10) {
                             sessionStorage.clear();
                             initLogin();
                             showCustomAlert("Error en servidor", result.message);

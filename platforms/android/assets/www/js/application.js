@@ -5,13 +5,42 @@ var user;
 var lastBarList;
 
 $(function() {
-    if (sessionStorage.getItem("user") !== "true") {
-        initLogin();
+    if (sessionStorage.getItem("user") !== "true" || document.cookie.length <= 0) {
+        if (localStorage.getItem("PHPSESSID") != null) {
+            Cookies.set("PHPSESSID", localStorage.getItem("PHPSESSID"));
+            $.when(checkSessionAlive()).done(function(result) {
+                sessionStorage.setItem("user", "true");
+                initNavbar();
+                initListBares();        
+            }).fail(function(result) {
+                initLogin();
+            });
+        } else {
+            initLogin();
+        }
     } else {
         initNavbar();
         initListBares();
     }
 });
+
+function showCustomAlert(title, message) {
+    var tmpl = $("#modal-template").html();
+        $("#modal-template").load("./scripts/modal.tmpl.html", function() {
+        var modalTmpl = $.templates("#modal-template");
+        app = { 
+                entry: {
+                    bodyContent: message,
+                }
+            };
+        if (title !== "") {
+            app.entry.modalTitle = [title];
+        }
+        var parsedTemplate = modalTmpl.render(app);
+        $("#modalContainer").html(parsedTemplate);
+        $("#customModal").modal('show');
+    });
+}
 
 function initNavbar() {
     $("#navbarContainer").load("./navbar.html", function() {
@@ -41,7 +70,18 @@ function changeNavbarActive(activeId) {
 
 function initLogin() {
     $("#navbarContainer").html('');
-    $("#mainContainer").load("./login.html", function() {
+    $("#mainContainer").load("./login.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
+        $("#loginForm").bind("keypress", function(event) {
+            if(event.which == 13) {
+                event.preventDefault();
+                checkLogin();
+            }
+        });
         $("#submitLogin").click(function(e) {
             checkLogin(); 
         }); 
@@ -49,13 +89,24 @@ function initLogin() {
 }
 
 function initListBares() {
-    $("#mainContainer").load("./listBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./listBares.html", function(response, status, xhr) {
+        if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
         loadListView();
     });
 }
 
 function initInsertBar() {
-    $("#mainContainer").load("./editorBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./editorBares.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
         $("#barEditorTitle").text("Nuevo Cofi");
         $("#submitBar").click(function () {
             insertOrUpdateBar();
@@ -64,7 +115,13 @@ function initInsertBar() {
 }
 
 function initBarEditorForId(id) {
-    $("#mainContainer").load("./editorBares.html", function() {
+    $("#mainContainer").html('');
+    $("#mainContainer").load("./editorBares.html", function(response, status, xhr) {
+         if (status == "error") {
+            showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
+            return;
+        }
+
         $("#barEditorTitle").text("Editar Cofi");
         $("#submitBarName").text("Actualizar");
 
@@ -72,8 +129,9 @@ function initBarEditorForId(id) {
             return bar.barId == id;
         });
         
-        if (barData.length <= 0) { //TODO: Handle error
-            initListBares(); //Miedo me da esto...
+        if (barData.length <= 0) {
+            initListBares();
+            showCustomAlert("Error en cliente", "El identificador del bar que está intentando editar es incorrecto.");
             return;
         }
 
@@ -105,6 +163,32 @@ function initBarEditorForId(id) {
     });    
 }
 
+function checkSessionAlive() {
+    var dfd = jQuery.Deferred();
+
+    $.ajax({
+        url: serverUrl + '/api.php',
+        data: {
+            action : 'isSessionAlive',
+        },
+        type: 'post',                   
+        async: 'true',
+        dataType: 'json',
+        success: function (result) {
+            if(result.code == 1) {
+                dfd.resolve();
+            } else {
+                dfd.reject(result);
+            }           
+        },
+        error: function (request,error) {          
+            dfd.reject();
+        }
+    });
+
+    return dfd.promise();
+}
+
 function checkLogin() {
     if(!($("#loginForm")[0].checkValidity())) {
         $("#loginForm")[0].reportValidity()
@@ -123,7 +207,12 @@ function checkLogin() {
             dataType: 'json',
             success: function (result) {
                 if(result.code > 0) {
+                    localStorage.clear();
+                    sessionStorage.clear();
                     sessionStorage.setItem("user", true);
+                    if ($("#persistSessionCheck").prop('checked')) {
+                        localStorage.setItem("PHPSESSID", Cookies.get("PHPSESSID"));
+                    }
                     initNavbar();
                     initListBares();                        
                 } else {
@@ -137,35 +226,49 @@ function checkLogin() {
                             $("#error-display").removeClass("d-none");
                             $("#loginForm input").addClass("is-invalid");
                            break;
+                        default:
+                            showCustomAlert('Error en servidor', result.message);
+                            break;
                     }
                 }
             },
-            error: function (request,error) {          
-                console.log('Error de red/servidor. (' + request.statusText + ')');
+            error: function (request,error) {  
+                showCustomAlert('Error', 'Error de red/servidor. (' + request.statusText + ')');
             }
         });                   
     }       
 }
 
 function loadListView() {
-    $.ajax({url: serverUrl + '/api.php',
-        data: {action : 'showList',},
+    $.ajax({
+        url: serverUrl + '/api.php',
+        data: {
+            action : 'showList',
+            },
         type: 'post',                   
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            for (var i = 0; i < result.length; i++) {
-                if(result[i].plugs == 1) {
-                    plugsData = 'fa fa-plug fa-fw';
-                } else if(result[i].plugs == 2) {
-                    plugsData = 'fa fa-clock-o fa-fw';
-                } else {
-                    plugsData = 'fa fa-battery-full fa-fw';
+            if(typeof(result.code) == "undefined") {
+                for (var i = 0; i < result.length; i++) {
+                    if(result[i].plugs == 1) {
+                        plugsData = 'fa fa-plug fa-fw';
+                    } else if(result[i].plugs == 2) {
+                        plugsData = 'fa fa-clock-o fa-fw';
+                    } else {
+                        plugsData = 'fa fa-battery-full fa-fw';
+                    }
+                    result[i].plugsClass = plugsData;
                 }
-                result[i].plugsClass = plugsData;
+               lastBarList = result;
+               renderBarList(result);             
+            } else if(result.code == -10) {
+                sessionStorage.clear();
+                initLogin();
+                showCustomAlert("Sesión Caducada", "Inice sesión para acceder al contenido.");
+            } else {
+                showCustomAlert("Error de servidor", result.message);
             }
-            lastBarList = result;
-            renderBarList(result);             
         },
         error: function (request,error) {          
             alert('Error de red/servidor.');
@@ -174,7 +277,7 @@ function loadListView() {
 }
 
 function renderBarList(barlist) {
-    $("#listBares-template").load("./scripts/listBares.tmpl.html", function() {
+   $("#listBares-template").load("./scripts/listBares.tmpl.html", function() {
         var baresTemplate = $.templates("#listBares-template");
         app = { entry: barlist };
         var parsedTemplate = baresTemplate.render(app);
@@ -183,59 +286,28 @@ function renderBarList(barlist) {
 }
 
 function closeSession() {
-    $.ajax({url: serverUrl + '/api.php',
+    $.ajax({
+        url: serverUrl + '/api.php',
         data: {action : 'logout',},
         type: 'post',                   
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            if(result.status) {
-                sessionStorage.clear();
-                initLogin()
+            localStorage.clear();
+            sessionStorage.clear();
+
+            if(result.code == 1) {
+                initLogin();
+            } else if(result.code == -10) {
+                initLogin();
+                showCustomAlert("Error en servidor", result.message);
             } else {
-                console.log("Cannot logout");
+                initLogin();
+                showCustomAlert('Error en servidor', 'La sesión remota no ha podido ser destruida: ' + result.message);
             }           
         },
         error: function (request,error) {          
-            alert('Error de red/servidor.');
-        }
-    });
-}
-
-
-function loadDetailedView(id) {
-
-    $.mobile.changePage( "#siteDetails", { transition: "slidefade"});
-
-    $.ajax({url: serverUrl + '/api.php',
-        data: {action : 'showDetailed', ident : id,},
-        type: 'post',                   
-        async: 'true',
-        dataType: 'json',
-        success: function (result) {
-            $('#tableDetailsContent').html("");
-            /*$.each(result[0], function(key, result))
-            {*/
-                $.each(result[0], function(name, value)
-                {
-                    switch(name)
-                    {
-                        case "nombre":
-                            $('#u_name').val(value);
-                            return;
-                        case "plugs":
-                            $('#u_' + name).val(value).flipswitch('refresh');
-                            return;
-                        case "idHost":
-                            return;
-                    }
-                    $('#u_' + name).val(value);
-                });
-            //}
-            //$('#listView').listview('refresh');              
-        },
-        error: function (request,error) {          
-            alert('Error de red/servidor.');
+            showCustomAlert('Error', 'Error de red/servidor.');
         }
     });
 }
@@ -255,18 +327,21 @@ function insertOrUpdateBar() {
                 async: 'true',
                 dataType: 'json',
                 success: function (result) {
-                    if(result.status) {
+                    if(result.code == 1) {
                         initListBares();
+                    } else if(result.code == -10) {
+                        sessionStorage.clear();
+                        initLogin();
+                        showCustomAlert("Error en servidor", result.message);
                     } else {
-                        console.log(result.message); 
+                        showCustomAlert("Error en servidor", result.message);
                     }
                 },
-                error: function (request,error) {          
-                    console.log('Error de red/servidor.');
+                error: function (request,error) {
+                    showCustomAlert("Error", "Error de red/servidor.");
                 }
             });                   
         } else {
-            //TODO: Sustituir por outline de error de validación consitente con el resto de elementos
             $('#plugs-false').parent().addClass("active");
             $('#plugs-true').parent().addClass("active");
             setTimeout(function() {
@@ -298,18 +373,22 @@ function deleteBar() {
                     async: 'true',
                     dataType: 'json',
                     success: function (result) {
-                        if(result.status) {
+                        if(result.code == 1) {
                             initListBares();
+                        } else if(result.code == -10) {
+                            sessionStorage.clear();
+                            initLogin();
+                            showCustomAlert("Error en servidor", result.message);
                         } else {
-                            alert(result.message); 
+                            showCustomAlert('Error en servidor', result.message);
                         }
                     },
                     error: function (request,error) {          
-                        alert('Error de red/servidor.');
+                        showCustomAlert('Error', 'Error de red/servidor.');
                     }
                 });                   
         } else {
-            alert('Campos vacíos');
+            showCustomAlert('Error', 'El identificador del bar que desea eliminar no ha podido ser determinado.');
         }
     }           
     return false; 
