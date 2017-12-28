@@ -1,6 +1,6 @@
 var serverUrl = "http://doghunter.ddns.net/vakdert";
 //var serverUrl = "http://localhost/vakdert";
-var apvHash = "beta-r1.0.2";
+var apvHash = "beta-r1.0.3";
 var user;
 var lastBarList;
 

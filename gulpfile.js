@@ -1,6 +1,8 @@
 var gulp        = require('gulp');
 var browserSync = require('browser-sync').create();
 var sass        = require('gulp-sass');
+var gulpBundleFiles = require('gulp-bundle-files');
+var bundles     = require('./bundle-options.json');
 
 // Compile sass into CSS & auto-inject into browsers
 gulp.task('sass', function() {
@@ -20,6 +22,11 @@ gulp.task('js', function() {
         .pipe(browserSync.stream());
 });
 
+//Bundle js files into combined.js file
+gulp.task('bundle', function() {
+    gulpBundleFiles(bundles);
+});
+
 // Static Server + watching scss/html files
 gulp.task('serve', ['sass'], function() {
 
@@ -31,4 +38,4 @@ gulp.task('serve', ['sass'], function() {
     gulp.watch("www/*.html").on('change', browserSync.reload);
 });
 
-gulp.task('default', ['js','serve']);
+gulp.task('default', ['js','serve', 'bundle']);
