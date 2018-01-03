@@ -12,6 +12,7 @@ function initLogin() {
                 checkLogin();
             }
         });
+        
         $("#submitLogin").click(function(e) {
             checkLogin(); 
         }); 

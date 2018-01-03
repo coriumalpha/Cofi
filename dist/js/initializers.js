@@ -5,6 +5,20 @@ function initListBares() {
             showCustomAlert("Error de cliente", "No se ha podido cargar la página.");
             return;
         }
+
+        $("#filterInput").bind("keypress", function(event) {
+            if(event.which == 13) {
+                event.preventDefault();
+                loadListView();
+            }
+        });
+
+        $("#filterInput").keyup(function(event) {
+            if($("#filterInput").val().length > 0) {
+                loadListView();
+            }
+        });
+
         loadListView();
     });
 }

@@ -39,16 +39,27 @@ function showCustomAlert(title, message) {
 }
 
 function loadListView() {
+    var filterValue = $("#filterInput").val();
+
     $.ajax({
         url: serverUrl + '/api.php',
         data: {
             action : 'showList',
+            filters: filterValue,
             },
         type: 'post',                   
         async: 'true',
         dataType: 'json',
         success: function (result) {
-            if(typeof(result.code) == "undefined") {
+            if (filterValue.length > 0 && result == null) {
+                var emptyContent = '  <div class="alert bg-light" role="alert"> \
+                                            No se ha encontrado ningún bar. \
+                                            <span class="close-fa"><i class="fa fa-frown-o" aria-hidden="true"></i></span> \
+                                        </div>';
+
+                $("#listBares").html(emptyContent);
+
+            } else if(typeof(result.code) == "undefined") {
                 for (var i = 0; i < result.length; i++) {
                     if(result[i].plugs == 1) {
                         plugsData = 'fa fa-plug fa-fw';
@@ -60,11 +71,13 @@ function loadListView() {
                     result[i].plugsClass = plugsData;
                 }
                lastBarList = result;
-               renderBarList(result);             
+               renderBarList(result); 
+
             } else if(result.code == -10) {
                 sessionStorage.clear();
                 initLogin();
                 showCustomAlert("Sesión Caducada", "Inice sesión para acceder al contenido.");
+
             } else {
                 showCustomAlert("Error de servidor", result.message);
             }
