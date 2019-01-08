@@ -1,7 +1,9 @@
 # Wiffee
 
-![alt text][logo]
-[logo]: https://github.com/coriumalpha/wiffee/blob/master/Content/www/images/miniLogo.png "Logo Title"
+<p align="center">
+  <img src="https://gitlab.com/coriumalpha/cofi/raw/046131533621779dd3f4097516019199fa0cf72d/images/miniLogo.png"/>
+</p>
+
 
 ### Personal WiFi AP key database gestor.
 
@@ -9,26 +11,23 @@
 ***
 
 
-### Project core files
+### Core files
 
-* [(Spanish) Resumen del proyecto y estructura de BBDD]([LÉEME]_Resumen_Del_Proyecto_Wiffee.pdf)
+* [Main Application - index.html](index.html)
 
-* [Main Application - index.html](Content/www/index.html)
+* [JS Side - application.js](js/application.js)
 
-* [JS Side - application.js](Content/www/js/application.js)
+* [Images (Photoshoped Logo)](images/)
 
-* [Images (Photoshoped Logo)](Content/www/images/)
+* [Serverside - API](https://gitlab.com/coriumalpha/vadkert)
 
-* [Serverside - API](Content/servidor/api.php)
-
-* [Config file](Content/config.xml)
 
 
 ***
 
 
 ### Test web server
-####(It may not be online)
+#### (It may not be online)
 
 [Web server](http://raspi.hol.es/)
 
