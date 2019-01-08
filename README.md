@@ -1,4 +1,4 @@
-# Wiffee
+# Cofi
 
 <p align="center">
   <img src="https://gitlab.com/coriumalpha/cofi/raw/046131533621779dd3f4097516019199fa0cf72d/images/miniLogo.png"/>
@@ -20,14 +20,3 @@
 * [Images (Photoshoped Logo)](images/)
 
 * [Serverside - API](https://gitlab.com/coriumalpha/vadkert)
-
-
-
-***
-
-
-### Test web server
-#### (It may not be online)
-
-[Web server](http://raspi.hol.es/)
-
