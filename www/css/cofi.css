@@ -1,0 +1,38 @@
+.siteAddress {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.invalid-feedback {
+    display: block;
+}
+
+#mainContainer {
+	margin-top: 4.5rem;
+	margin-bottom: 3rem; /*Cuidaillo con esta...*/
+}
+
+.editorTitle {
+	margin-bottom: 0px !important;
+	font-family: 'Alex Brush', cursive;
+}
+
+.modal-content {
+	border-top-left-radius: 0.4rem;
+	border-top-right-radius: 0.4rem;
+}
+
+.modal-footer {
+	padding-top: 5px;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+}
+
+.close-fa {
+	float: right;
+	font-size: 1.3125rem;
+	font-weight: 700;
+	line-height: 1;
+}

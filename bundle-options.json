@@ -1,0 +1,28 @@
+{
+  "parentTaskName": "bundle",
+  "concat": {
+    "active": true,
+    "config": {}
+  },
+  "uglify": {
+    "active": false,
+    "config": {}
+  },
+  "sourcemap": {
+    "active": true,
+    "config": {}
+  },
+  "destinationFolder": "www/js",
+  "newLine": ";",
+  "files": {
+    "application.js": [
+      "dist/js/config.js",
+      "dist/js/application.js",
+      "dist/js/login.js",
+      "dist/js/session-gestor.js",
+      "dist/js/initializers.js",
+      "dist/js/navbar.js",
+      "dist/js/crud-operations.js"
+    ]
+  }
+}
