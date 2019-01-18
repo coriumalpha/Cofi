@@ -4,19 +4,16 @@
   <img src="https://gitlab.com/coriumalpha/cofi/raw/046131533621779dd3f4097516019199fa0cf72d/images/miniLogo.png"/>
 </p>
 
-
-### Personal WiFi AP key database gestor.
-
+## Personal WiFi AP key database gestor
 
 ***
 
+## Core files
 
-### Core files
+  *   [Main Application - index.html](index.html)
 
-* [Main Application - index.html](index.html)
+  *   [JS Side - application.js](js/application.js)
 
-* [JS Side - application.js](js/application.js)
+  *   [Images (Photoshoped Logo)](images/)
 
-* [Images (Photoshoped Logo)](images/)
-
-* [Serverside - API](https://gitlab.com/coriumalpha/vadkert)
+  *   [Serverside - API](https://gitlab.com/coriumalpha/vadkert)
